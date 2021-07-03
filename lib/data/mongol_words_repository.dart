@@ -41,7 +41,8 @@ class MongolWordsRepository {
       } catch (_) {}
 
       // Copy from asset
-      ByteData data = await rootBundle.load(join("assets", _dbFilepath));
+      ByteData data = await rootBundle
+          .load(join("packages/ime_mongol_package/lib/assets", _dbFilepath));
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
@@ -59,6 +60,7 @@ class MongolWordsRepository {
     int maxLength = await _queryMaxLengthByFrequency(FREQUENCY_BOUND - 1);
 
     int page = 1;
+    int totalRecords = 0;
     while (maxLength > 0) {
       BurkhardKellerTree? bkTree = _lengthKeyBkMap[maxLength];
       if (bkTree == null) {
@@ -74,11 +76,13 @@ class MongolWordsRepository {
         page: page - 1,
       );
 
-      print('loading words into memory: ${wordEntityList.length}');
+      totalRecords += wordEntityList.length;
       bk.addAll(wordEntityList);
       maxLength--;
       page++;
     }
+
+    print('totalRecords :$totalRecords');
   }
 
   /// Query words with where clause of:
@@ -90,20 +94,16 @@ class MongolWordsRepository {
       required int page}) async {
     List<Map<String, dynamic>> list = await _db.query(
       'word',
-      where: "length = ? AND frequency > ? ",
+      where: '"length" = ? AND "frequency" > ?',
       whereArgs: [length, frequency],
-      limit: pageSize,
-      offset: page * pageSize,
     );
-
     return list.map((row) => WordEntity.fromMap(row)).toList();
   }
 
   Future<int> _queryMaxLengthByFrequency(int frequency) async {
     List<Map<String, dynamic>> list = await _db.rawQuery(
-        "SELECT MAX(length) AS maxLength FROM $_tableName WHERE frequency > ?"[
-            frequency]);
-    print(list);
+        "SELECT MAX(length) AS maxLength FROM $_tableName WHERE frequency > ?",
+        [frequency]);
     return list[0]['maxLength'];
   }
 }
