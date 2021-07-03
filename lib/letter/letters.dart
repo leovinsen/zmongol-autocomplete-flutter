@@ -1,0 +1,32 @@
+class Letters {
+  static final E A = new A();
+  static final E E = new E();
+  static final I I = new I();
+  static final O O = new O();
+  static final U U = new U();
+  static final N N = new N();
+  static final B B = new B();
+  static final P P = new P();
+  static final H H = new H();
+  static final G G = new G();
+  static final M M = new M();
+  static final L L = new L();
+  static final S S = new S();
+  static final X X = new X();
+  static final T T = new T();
+  static final D D = new D();
+  static final Q Q = new Q();
+  static final J J = new J();
+  static final Y Y = new Y();
+  static final R R = new R();
+  static final W W = new W();
+  static final F F = new F();
+  static final K K = new K();
+  static final C C = new C();
+  static final Z Z = new Z();
+  static final GaligH GALIG_H = new GaligH();
+  static final GaligR GALIG_R = new GaligR();
+  static final GaligL GALIG_L = new GaligL();
+  static final GaligZH GALIG_ZH = new GaligZH();
+  static final GaligCH GALIG_CH = new GaligCH();
+}
