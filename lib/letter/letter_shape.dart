@@ -6,10 +6,10 @@ class LetterShape {
   final String latinKey;
   final String shape;
   final int location;
-  late SplicingAtFrontRule fuzzyFrontAtRule;
-  late SplicingAtBehindRule fuzzyBehindAtRule;
-  late SplicingAtFrontRule severeFrontAtRule;
-  late SplicingAtBehindRule severeBehindAtRule;
+  SplicingAtFrontRule? fuzzyFrontAtRule;
+  SplicingAtBehindRule? fuzzyBehindAtRule;
+  SplicingAtFrontRule? severeFrontAtRule;
+  SplicingAtBehindRule? severeBehindAtRule;
 
   LetterShape(this.latinKey, this.shape, this.location);
 
@@ -25,35 +25,44 @@ class LetterShape {
     return location;
   }
 
-  SplicingAtFrontRule getFuzzyFrontAtRule() {
+  bool equals(Object o) {
+    return identical(this, o) ||
+        o is LetterShape &&
+            runtimeType == o.runtimeType &&
+            location == o.location &&
+            latinKey == o.latinKey &&
+            shape == o.shape;
+  }
+
+  SplicingAtFrontRule? getFuzzyFrontAtRule() {
     return fuzzyFrontAtRule;
   }
 
-  void setFuzzyFrontAtRule(SplicingAtFrontRule fuzzyFrontAtRule) {
+  void setFuzzyFrontAtRule(SplicingAtFrontRule? fuzzyFrontAtRule) {
     this.fuzzyFrontAtRule = fuzzyFrontAtRule;
   }
 
-  SplicingAtBehindRule getFuzzyBehindAtRule() {
+  SplicingAtBehindRule? getFuzzyBehindAtRule() {
     return fuzzyBehindAtRule;
   }
 
-  void setFuzzyBehindAtRule(SplicingAtBehindRule fuzzyBehindAtRule) {
+  void setFuzzyBehindAtRule(SplicingAtBehindRule? fuzzyBehindAtRule) {
     this.fuzzyBehindAtRule = fuzzyBehindAtRule;
   }
 
-  SplicingAtFrontRule getSevereFrontAtRule() {
+  SplicingAtFrontRule? getSevereFrontAtRule() {
     return severeFrontAtRule;
   }
 
-  void setSevereFrontAtRule(SplicingAtFrontRule severeFrontAtRule) {
+  void setSevereFrontAtRule(SplicingAtFrontRule? severeFrontAtRule) {
     this.severeFrontAtRule = severeFrontAtRule;
   }
 
-  SplicingAtBehindRule getSevereBehindAtRule() {
+  SplicingAtBehindRule? getSevereBehindAtRule() {
     return severeBehindAtRule;
   }
 
-  void setSevereBehindAtRule(SplicingAtBehindRule severeBehindAtRule) {
+  void setSevereBehindAtRule(SplicingAtBehindRule? severeBehindAtRule) {
     this.severeBehindAtRule = severeBehindAtRule;
   }
 

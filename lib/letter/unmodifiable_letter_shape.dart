@@ -12,22 +12,22 @@ class UnmodifiableLetterShape extends LetterShape {
   }
 
   @override
-  void setFuzzyFrontAtRule(SplicingAtFrontRule fuzzyFrontAtRule) {
+  void setFuzzyFrontAtRule(SplicingAtFrontRule? fuzzyFrontAtRule) {
     throw new UnsupportedError("Unsupported operation");
   }
 
   @override
-  void setFuzzyBehindAtRule(SplicingAtBehindRule fuzzyBehindAtRule) {
+  void setFuzzyBehindAtRule(SplicingAtBehindRule? fuzzyBehindAtRule) {
     throw new UnsupportedError("Unsupported operation");
   }
 
   @override
-  void setSevereFrontAtRule(SplicingAtFrontRule severeFrontAtRule) {
+  void setSevereFrontAtRule(SplicingAtFrontRule? severeFrontAtRule) {
     throw new UnsupportedError("Unsupported operation");
   }
 
   @override
-  void setSevereBehindAtRule(SplicingAtBehindRule severeBehindAtRule) {
+  void setSevereBehindAtRule(SplicingAtBehindRule? severeBehindAtRule) {
     throw new UnsupportedError("Unsupported operation");
   }
 }
