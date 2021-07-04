@@ -56,7 +56,8 @@ class LetterSplicer {
                 lss.append(letterShape);
                 newWholeLssList.add(lss);
               } else {
-                print('ignored ${clss.toString}, ${letterShape.toString()}');
+                // print(
+                //     'ignored in fuzzy${clss.toString()}, ${letterShape.toString()}');
               }
             }
           }
@@ -106,7 +107,7 @@ class LetterSplicer {
               lss.append(letterShape);
               newWholeLssList.add(lss);
             } else {
-              print('ignored :$letterShape');
+              print('ignored lettershape: ' + letterShape.toString());
             }
           }
         } else {
@@ -118,7 +119,8 @@ class LetterSplicer {
                 lss.append(letterShape);
                 newWholeLssList.add(lss);
               } else {
-                print('ignored ${clss.toString}, ${letterShape.toString()}');
+                // print(
+                //     'ignored in severe ${clss.toString()}, ${letterShape.toString()}');
               }
             }
           }

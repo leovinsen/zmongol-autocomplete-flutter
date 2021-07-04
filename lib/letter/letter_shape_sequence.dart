@@ -46,7 +46,6 @@ class LetterShapeSequence {
   String toString() {
     var s = "";
     for (LetterShape letterShape in this.letterShapes) {
-      print("inside letterShapeSequence to String");
       s += letterShape.getShape();
     }
     return s.toString();
