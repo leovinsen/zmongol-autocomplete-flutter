@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:ime_mongol_package/data/mongol_words_repository.dart';
+import 'package:ime_mongol_package/mongol_autocomplete_service.dart';
+import 'package:mongol/mongol.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,7 +27,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Mongol Autocomplete Demo'),
     );
   }
 }
@@ -47,14 +51,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _repo = MongolWordsRepository();
+  final _service = InputMethodService();
   bool _isLoading = true;
+  List<String> _words = [];
 
   @override
   void initState() {
     super.initState();
 
-    _repo.initialize().then((value) {
+    _service.initialize().then((value) {
       _isLoading = false;
       setState(() {});
     });
@@ -66,10 +71,52 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-          child: _isLoading
-              ? CircularProgressIndicator()
-              : Text('loaded successfully')),
+      body: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(24.0),
+        child: _isLoading
+            ? CircularProgressIndicator()
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextField(onChanged: _suggestWords),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  Text('count: ${_words.length}'),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (_, index) {
+                        var str = _words[index];
+                        return MongolText(
+                          str,
+                          style: TextStyle(
+                            fontFamily: 'z52haratig',
+                            fontSize: 24,
+                          ),
+                        );
+                      },
+                      separatorBuilder: (_, index) => SizedBox(
+                        width: 4.0,
+                      ),
+                      itemCount: _words.length,
+                    ),
+                  ),
+                ],
+              ),
+      ),
     );
+  }
+
+  void _suggestWords(str) {
+    var res = _service.makeWord(str);
+
+    setState(() {
+      _words = res;
+    });
   }
 }
