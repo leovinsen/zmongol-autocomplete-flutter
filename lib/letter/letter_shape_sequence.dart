@@ -17,11 +17,11 @@ class LetterShapeSequence {
     if (ntr == nature || ntr == Nature.SAARMAG) {
       return;
     }
-    this.nature = ntr;
+    this._nature = ntr;
   }
 
   void append(LetterShape letterShape) {
-    this.nature = NatureUtil.getNature(letterShape.getLatinKey());
+    this._nature = NatureUtil.getNature(letterShape.getLatinKey());
     letterShapes.add(letterShape);
   }
 
@@ -46,6 +46,7 @@ class LetterShapeSequence {
   String toString() {
     var s = "";
     for (LetterShape letterShape in this.letterShapes) {
+      print("inside letterShapeSequence to String");
       s += letterShape.getShape();
     }
     return s.toString();
