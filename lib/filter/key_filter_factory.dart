@@ -11,7 +11,7 @@ class KeyFilterFactory {
     filterMap[bTailKeyFilter.getKey()] = bTailKeyFilter;
   }
 
-  KeyFilter get(String key) {
-    return filterMap[key]!;
+  KeyFilter? get(String key) {
+    return filterMap[key];
   }
 }
