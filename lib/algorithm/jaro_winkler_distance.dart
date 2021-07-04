@@ -44,7 +44,7 @@ class JaroWinklerDistance {
 
     for (prefix = 0; transpositions < min.length; ++transpositions) {
       if (matchIndexes[transpositions] != -1) {
-        ms1[prefix] = min.substring(transpositions, transpositions + 1);
+        ms1.insert(prefix, min.substring(transpositions, transpositions + 1));
         ++prefix;
       }
     }
@@ -53,7 +53,7 @@ class JaroWinklerDistance {
 
     for (prefix = 0; transpositions < max.length; ++transpositions) {
       if (matchFlags[transpositions]) {
-        ms2[prefix] = max.substring(transpositions, transpositions + 1);
+        ms2.insert(prefix, min.substring(transpositions, transpositions + 1));
         ++prefix;
       }
     }
@@ -74,12 +74,12 @@ class JaroWinklerDistance {
       ++prefix;
     }
 
-    return [matches, (transpositions / 2) as int, prefix, min.length];
+    return [matches, (transpositions / 2).floor(), prefix, min.length];
   }
 
   double getDistance(String s1, String s2) {
     List<int> mtp = this._matches(s1, s2);
-    double m = mtp[0] as double;
+    double m = mtp[0].toDouble();
     if (m == 0.0) {
       return 0.0;
     } else {
