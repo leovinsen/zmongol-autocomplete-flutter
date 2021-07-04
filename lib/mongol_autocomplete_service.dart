@@ -2,13 +2,14 @@ import 'dart:collection';
 
 import 'package:ime_mongol_package/algorithm/burhard_keller_tree.dart';
 import 'package:ime_mongol_package/algorithm/score_marker.dart';
+import 'package:ime_mongol_package/data/db_provider.dart';
 import 'package:ime_mongol_package/data/mongol_words_repository.dart';
 import 'package:ime_mongol_package/filter/key_filter.dart';
 import 'package:ime_mongol_package/filter/key_filter_factory.dart';
 import 'package:ime_mongol_package/letter/letter_shape_sequence.dart';
 import 'package:ime_mongol_package/model/string_distance_info.dart';
 import 'package:ime_mongol_package/model/suggest_word.dart';
-import 'package:ime_mongol_package/word_entity.dart';
+import 'package:ime_mongol_package/model/word_entity.dart';
 
 import 'keyboard/decomposer.dart';
 import 'letter/splice/letter_splicer.dart';
@@ -31,7 +32,7 @@ class InputMethodService {
   Future<void> initialize() async {
     print('initializing');
     int time1 = DateTime.now().millisecondsSinceEpoch;
-    await wordRepository.initialize();
+    await DbProvider.instance.initialize();
     await _loadWordsIntoMemory();
     int time2 = DateTime.now().millisecondsSinceEpoch;
 
@@ -90,8 +91,8 @@ class InputMethodService {
     }
 
     scoreMarker.markAndFilter();
-    print(
-        '$str, ${scoreMarker.getSuggestWordList().length}, ${DateTime.now().millisecondsSinceEpoch - time1}');
+    // print(
+    //     '$str, ${scoreMarker.getSuggestWordList().length}, ${DateTime.now().millisecondsSinceEpoch - time1}');
     return scoreMarker.getSuggestWordList();
   }
 
@@ -101,6 +102,7 @@ class InputMethodService {
       return List.empty();
     }
 
+    print('fuzzyMakeWord: decomposing latin sequence');
     List<List<String>> decomposedLatinSequences =
         decomposer.decompose(inputLatinSequence);
     if (decomposedLatinSequences == null || decomposedLatinSequences.isEmpty) {
@@ -118,7 +120,7 @@ class InputMethodService {
       if (letterShapeSequenceList == null || letterShapeSequenceList.isEmpty) {
         continue;
       }
-      KeyFilter keyFilter = keyFilterFactory
+      KeyFilter? keyFilter = keyFilterFactory
           .get(latinSequence[latinSequence.length - 1] + "-tail");
       for (LetterShapeSequence ls in letterShapeSequenceList) {
         String s = ls.toString();
@@ -147,11 +149,12 @@ class InputMethodService {
       }
     }
 
-    List<SuggestWord> suggestWordList = new List.from(suggestWordMap.values);
-    suggestWordList.sort((o1, o2) => o2.score.compareTo(o1.score));
+    // List<SuggestWord> suggestWordList = new List.from(suggestWordMap.values);
+    // suggestWordList.sort((o1, o2) => o2.score.compareTo(o1.score));
     int time2 = DateTime.now().millisecondsSinceEpoch;
     print("key: $inputLatinSequence,run time:${time2 - time1}ms");
-    return suggestWordList;
+    // return suggestWordList;
+    return [];
   }
 
   List<String> severeMakeWord(final String inputLatinSequence) {
@@ -190,32 +193,31 @@ class InputMethodService {
     }
     List<String> words = [];
     List<String> severeMatchResult = this.severeMakeWord(inputLatinSequence);
-    print('completed severeMakeWord');
-    // List<SuggestWord> fuzzyMatchSuggestResult =
-    //     this.fuzzyMakeWord(inputLatinSequence);
-    // List<String> fuzzyMatchResult =
-    //     SuggestWord.convert(fuzzyMatchSuggestResult);
+    List<SuggestWord> fuzzyMatchSuggestResult =
+        this.fuzzyMakeWord(inputLatinSequence);
+    List<String> fuzzyMatchResult =
+        SuggestWord.convert(fuzzyMatchSuggestResult);
 
-    // if (fuzzyMatchResult == null || fuzzyMatchResult.isEmpty) {
-    //   words.addAll(severeMatchResult);
-    // } else {
-    //   if (severeMatchResult == null || severeMatchResult.isEmpty) {
-    //     words.addAll(fuzzyMatchResult);
-    //   } else {
-    //     for (String severe in severeMatchResult) {
-    //       if (fuzzyMatchResult.contains(severe)) {
-    //         words.add(severe);
-    //         fuzzyMatchResult.remove(severe);
-    //       }
-    //     }
-    //     if (words == null || words.isEmpty) {
-    //       words.addAll(fuzzyMatchResult);
-    //       words.addAll(severeMatchResult);
-    //     } else {
-    //       words.addAll(fuzzyMatchResult);
-    //     }
-    //   }
-    // }
+    if (fuzzyMatchResult == null || fuzzyMatchResult.isEmpty) {
+      words.addAll(severeMatchResult);
+    } else {
+      if (severeMatchResult == null || severeMatchResult.isEmpty) {
+        words.addAll(fuzzyMatchResult);
+      } else {
+        for (String severe in severeMatchResult) {
+          if (fuzzyMatchResult.contains(severe)) {
+            words.add(severe);
+            fuzzyMatchResult.remove(severe);
+          }
+        }
+        if (words == null || words.isEmpty) {
+          words.addAll(fuzzyMatchResult);
+          words.addAll(severeMatchResult);
+        } else {
+          words.addAll(fuzzyMatchResult);
+        }
+      }
+    }
 
     int time2 = DateTime.now().millisecondsSinceEpoch;
     print('key: $inputLatinSequence, runtime: ${time2 - time1}ms');

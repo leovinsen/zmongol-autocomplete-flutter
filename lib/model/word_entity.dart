@@ -1,4 +1,4 @@
-import 'model/mount_object.dart';
+import 'mount_object.dart';
 
 class WordEntity implements MountObject {
   final int id;
