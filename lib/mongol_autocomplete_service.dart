@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:ime_mongol_package/algorithm/burhard_keller_tree.dart';
 import 'package:ime_mongol_package/algorithm/score_marker.dart';
+import 'package:ime_mongol_package/black_sequence_service.dart';
 import 'package:ime_mongol_package/data/db_provider.dart';
 import 'package:ime_mongol_package/data/mongol_words_repository.dart';
 import 'package:ime_mongol_package/filter/key_filter.dart';
@@ -29,14 +30,16 @@ class InputMethodService {
 
   final KeyFilterFactory keyFilterFactory = new KeyFilterFactory();
 
+  final _blackSequenceService = BlackSequenceService();
+
   Future<void> initialize() async {
-    print('initializing');
     int time1 = DateTime.now().millisecondsSinceEpoch;
     await DbProvider.instance.initialize();
     await _loadWordsIntoMemory();
+    await _blackSequenceService.initialize();
     int time2 = DateTime.now().millisecondsSinceEpoch;
 
-    print('initialized in ${time2 - time1} ms');
+    print('initialized autocomplete service in ${time2 - time1} ms');
   }
 
   Future<void> _loadWordsIntoMemory() async {
@@ -102,7 +105,6 @@ class InputMethodService {
       return List.empty();
     }
 
-    print('fuzzyMakeWord: decomposing latin sequence');
     List<List<String>> decomposedLatinSequences =
         decomposer.decompose(inputLatinSequence);
     if (decomposedLatinSequences == null || decomposedLatinSequences.isEmpty) {
@@ -125,11 +127,14 @@ class InputMethodService {
       for (LetterShapeSequence ls in letterShapeSequenceList) {
         String s = ls.toString();
 
+        if (_blackSequenceService.contains(s)) {
+          continue;
+        }
+
         List<SuggestWord> partSuggestWord = this.matchInBkMaps(s);
-        // if (partSuggestWord == null || partSuggestWord.isEmpty) {
-        //     blackSequenceService.add(s);
-        //     return null;
-        // }
+        if (partSuggestWord == null || partSuggestWord.isEmpty) {
+          _blackSequenceService.add(s);
+        }
         // synchronized (suggestWordMap) {
         for (SuggestWord sw in partSuggestWord) {
           SuggestWord? tmp = suggestWordMap[sw.str];
@@ -142,19 +147,17 @@ class InputMethodService {
         }
         // }
 
-        /// Blacklisting is not implemented
-        // if (blackSequenceService.contains(s)) {
-        //     continue;
-        // }
       }
     }
 
-    // List<SuggestWord> suggestWordList = new List.from(suggestWordMap.values);
-    // suggestWordList.sort((o1, o2) => o2.score.compareTo(o1.score));
+    //TODO: do it periodically when app is idle
+    _blackSequenceService.persistNewRecords();
+    List<SuggestWord> suggestWordList = new List.from(suggestWordMap.values);
+    suggestWordList.sort((o1, o2) => o2.score.compareTo(o1.score));
     int time2 = DateTime.now().millisecondsSinceEpoch;
-    print("key: $inputLatinSequence,run time:${time2 - time1}ms");
-    // return suggestWordList;
-    return [];
+    print(
+        "fuzzyMakeWord() key: $inputLatinSequence,run time:${time2 - time1}ms");
+    return suggestWordList;
   }
 
   List<String> severeMakeWord(final String inputLatinSequence) {
