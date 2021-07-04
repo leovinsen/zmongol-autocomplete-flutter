@@ -1,3 +1,5 @@
+import 'package:ime_mongol_package/letter/letter_shape.dart';
+
 abstract class Letter {
   final String latinKey;
 
@@ -6,4 +8,6 @@ abstract class Letter {
   String getLatinKey() {
     return latinKey;
   }
+
+  List<LetterShape> getLetterShapes();
 }
