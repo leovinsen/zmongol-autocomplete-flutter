@@ -98,11 +98,11 @@ class Node {
   bool get isEnd => this._isEnd;
 
   void set key(String? key) {
-    this.key = key;
+    this._key = key;
   }
 
   void set isEnd(bool isEnd) {
-    this.isEnd = isEnd;
+    this._isEnd = isEnd;
   }
 
   Node? get(String character) {
