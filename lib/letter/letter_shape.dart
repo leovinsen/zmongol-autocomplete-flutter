@@ -34,6 +34,11 @@ class LetterShape {
             shape == o.shape;
   }
 
+  @override
+  String toString() {
+    return this.latinKey + "_" + this.location.toString() + "_" + this.shape;
+  }
+
   SplicingAtFrontRule? getFuzzyFrontAtRule() {
     return fuzzyFrontAtRule;
   }
