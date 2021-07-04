@@ -45,6 +45,6 @@ class DbProvider {
     }
 
     // open the database
-    _db = await openDatabase(path, readOnly: true);
+    _db = await openDatabase(path, readOnly: false);
   }
 }
