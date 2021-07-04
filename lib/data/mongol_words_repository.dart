@@ -54,10 +54,7 @@ class MongolWordsRepository {
   /// Query words with where clause of:
   /// WHERE length = ? AND frequency > ?
   Future<List<WordEntity>> queryWordsByLengthAndGtFrequency(
-      {required int length,
-      required int frequency,
-      required int pageSize,
-      required int page}) async {
+      {required int length, required int frequency}) async {
     List<Map<String, dynamic>> list = await _db.query(
       'word',
       where: '"length" = ? AND "frequency" > ?',

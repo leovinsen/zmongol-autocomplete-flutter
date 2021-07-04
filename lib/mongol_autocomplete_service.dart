@@ -1,195 +1,217 @@
-  class InputMethodService implements ApplicationRunner {
-    private static final transient Logger logger = LoggerFactory.getLogger(InputMethodService.class);
+import 'dart:collection';
 
-    private static final transient String ROOT_STRING = "ᡥᡪᡱᡪᢝ";
-    private static final transient int DEFAULT_CAPACITY = 64;
-    private static final transient int FREQUENCY_BOUND = 6;
+import 'package:ime_mongol_package/algorithm/burhard_keller_tree.dart';
+import 'package:ime_mongol_package/algorithm/score_marker.dart';
+import 'package:ime_mongol_package/data/mongol_words_repository.dart';
+import 'package:ime_mongol_package/filter/key_filter.dart';
+import 'package:ime_mongol_package/filter/key_filter_factory.dart';
+import 'package:ime_mongol_package/letter/letter_shape_sequence.dart';
+import 'package:ime_mongol_package/model/string_distance_info.dart';
+import 'package:ime_mongol_package/model/suggest_word.dart';
+import 'package:ime_mongol_package/word_entity.dart';
 
-    @Resource
-    WordRepository wordRepository;
+import 'keyboard/decomposer.dart';
+import 'letter/splice/letter_splicer.dart';
 
-    private final Map<Integer, BurkhardKellerTree> lengthKeyBkMap = new HashMap<>(DEFAULT_CAPACITY);
+class InputMethodService {
+  static const String ROOT_STRING = "ᡥᡪᡱᡪᢝ";
+  static const int DEFAULT_CAPACITY = 64;
+  static const int FREQUENCY_BOUND = 6;
 
-    private final Decomposer decomposer = new Decomposer();
+  final _lengthKeyBkMap = Map<int, BurkhardKellerTree>();
 
-    private final LetterSplicer letterSplicer = new LetterSplicer();
+  final wordRepository = MongolWordsRepository();
 
-    @Resource
-    private KeyFilterFactory keyFilterFactory;
+  final decomposer = new Decomposer();
 
-    @Resource
-    private MatchPool matchPool;
+  final letterSplicer = new LetterSplicer();
 
-    @Resource
-    private BlackSequenceService blackSequenceService;
+  final KeyFilterFactory keyFilterFactory = new KeyFilterFactory();
 
-    @Override
-      void run(ApplicationArguments args) throws Exception {
-        int maxLength = wordRepository.queryMaxLength(FREQUENCY_BOUND - 1);
+  InputMethodService() {
+    _loadWordsIntoMemory;
+  }
+  Future<void> _loadWordsIntoMemory() async {
+    int maxLength =
+        await wordRepository.queryMaxLengthByFrequency(FREQUENCY_BOUND - 1);
 
-        while (maxLength > 0) {
-            BurkhardKellerTree bkTree = lengthKeyBkMap.get(maxLength);
-            if (bkTree == null) {
-                bkTree = new BurkhardKellerTree(new WordEntity(ROOT_STRING));
-                lengthKeyBkMap.put(maxLength, bkTree);
-            }
-            BurkhardKellerTree bk = bkTree;
-            int curLength = maxLength;
-            BatchExecutor.queryAll((pageNum, pageSize) -> {
-                List<WordEntity> wordEntityList = wordRepository.queryAll(curLength, 45, pageNum, pageSize);
-                if (CollectionUtils.isEmpty(wordEntityList)) {
-                    return 0;
-                }
-                bk.addAll(wordEntityList);
-                return wordEntityList.size();
-            });
-            maxLength--;
-        }
+    int totalRecords = 0;
+    while (maxLength > 0) {
+      BurkhardKellerTree? bkTree = _lengthKeyBkMap[maxLength];
+      if (bkTree == null) {
+        bkTree = new BurkhardKellerTree(new WordEntity.fromString(ROOT_STRING));
+        _lengthKeyBkMap[maxLength] = bkTree;
+      }
+      BurkhardKellerTree bk = bkTree;
+      int curLength = maxLength;
+      List<WordEntity> wordEntityList =
+          await wordRepository.queryWordsByLengthAndGtFrequency(
+        length: curLength,
+        frequency: 45,
+      );
+
+      totalRecords += wordEntityList.length;
+      bk.addAll(wordEntityList);
+      maxLength--;
     }
 
-      List<SuggestWord> matchInBkMaps(final String str) {
-        long time1 = Instant.now().toEpochMilli();
-        if (Strings.isBlank(str)) {
-            return Collections.emptyList();
-        }
-        int length = str.length();
-        ScoreMarker scoreMarker = new ScoreMarker(str);
+    print('total Records loaded:$totalRecords');
+  }
 
-        for (Integer keyLength : lengthKeyBkMap.keySet()) {
-            if (keyLength >= length && keyLength < length * 2) {
-                List<StringDistanceInfo> partMatched =
-                        lengthKeyBkMap.get(keyLength).matching(str, keyLength - length);
-                if (CollectionUtils.isEmpty(partMatched)) {
-                    continue;
-                }
-                for (StringDistanceInfo info : partMatched) {
-                    WordEntity we = (WordEntity) info.getMountObject();
-                    scoreMarker.setMaxFrequency(we.getFrequency());
-                    SuggestWord sw = new SuggestWord(we.getStr(), we.getLength(),
-                            we.getFrequency(), info.getDistance());
-                    scoreMarker.add(sw);
-                }
-            }
-        }
+  List<SuggestWord> matchInBkMaps(final String str) {
+    int time1 = DateTime.now().millisecondsSinceEpoch;
+    if (str == null || str.isEmpty) {
+      return List.empty();
+    }
+    int length = str.length;
+    ScoreMarker scoreMarker = new ScoreMarker(str);
 
-        scoreMarker.markAndFilter();
-        logger.info("{},{},{}ms", str, scoreMarker.getSuggestWordList().size(), Instant.now().toEpochMilli() - time1);
-        return scoreMarker.getSuggestWordList();
+    for (int keyLength in _lengthKeyBkMap.keys) {
+      if (keyLength >= length && keyLength < length * 2) {
+        List<StringDistanceInfo> partMatched =
+            _lengthKeyBkMap[keyLength]!.matching(str, keyLength - length);
+        if (partMatched == null || partMatched.isEmpty) {
+          continue;
+        }
+        for (StringDistanceInfo info in partMatched) {
+          WordEntity we = info.getMountObject() as WordEntity;
+          scoreMarker.setMaxFrequency(we.frequency);
+          SuggestWord sw = new SuggestWord(
+              we.str, we.length, we.frequency, info.getDistance());
+          scoreMarker.add(sw);
+        }
+      }
     }
 
-      MatchResult<List<SuggestWord>> fuzzyMakeWord(final String inputLatinSequence) {
-        long time1 = Instant.now().toEpochMilli();
-        if (Strings.isBlank(inputLatinSequence)) {
-            return new MatchResult<>(Instant.now().toEpochMilli() - time1, Collections.emptyList());
-        }
+    scoreMarker.markAndFilter();
+    print(
+        '$str, ${scoreMarker.getSuggestWordList().length}, ${DateTime.now().millisecondsSinceEpoch - time1}');
+    return scoreMarker.getSuggestWordList();
+  }
 
-        List<List<String>> decomposedLatinSequences = decomposer.decompose(inputLatinSequence);
-        if (CollectionUtils.isEmpty(decomposedLatinSequences)) {
-            return new MatchResult<>(Instant.now().toEpochMilli() - time1, Collections.emptyList());
-        }
-
-        Map<String, SuggestWord> suggestWordMap = new HashMap<>(256);
-        List<Callable<Void>> tasks = new ArrayList<>();
-        for (List<String> latinSequence : decomposedLatinSequences) {
-            List<LetterShapeSequence> letterShapeSequenceList = letterSplicer.fuzzy(latinSequence);
-            if (letterShapeSequenceList == null || letterShapeSequenceList.isEmpty()) {
-                continue;
-            }
-            KeyFilter keyFilter = keyFilterFactory.get(latinSequence.get(latinSequence.size() - 1) + "-tail");
-            for (LetterShapeSequence ls : letterShapeSequenceList) {
-                String s = ls.toString();
-                if (blackSequenceService.contains(s)) {
-                    continue;
-                }
-                tasks.add(() -> {
-                    List<SuggestWord> partSuggestWord = this.matchInBkMaps(s);
-                    if (CollectionUtils.isEmpty(partSuggestWord)) {
-                        blackSequenceService.add(s);
-                        return null;
-                    }
-                    synchronized (suggestWordMap) {
-                        for (SuggestWord sw : partSuggestWord) {
-                            SuggestWord tmp = suggestWordMap.get(sw.getStr());
-                            if (tmp != null && tmp.getScore() > sw.getScore()) {
-                                continue;
-                            }
-                            if (keyFilter == null || keyFilter.accept(sw.getStr())) {
-                                suggestWordMap.put(sw.getStr(), sw);
-                            }
-                        }
-                    }
-                    return null;
-                });
-            }
-        }
-        matchPool.execute(tasks);
-
-        List<SuggestWord> suggestWordList = new ArrayList<>(suggestWordMap.values());
-        suggestWordList.sort((o1, o2) -> Float.compare(o2.getScore(), o1.getScore()));
-        long time2 = Instant.now().toEpochMilli();
-        logger.info("key:{},run time:{}ms", inputLatinSequence, time2 - time1);
-        return new MatchResult<>(time2 - time1, suggestWordList);
+  List<SuggestWord> fuzzyMakeWord(final String inputLatinSequence) {
+    int time1 = DateTime.now().millisecondsSinceEpoch;
+    if (inputLatinSequence == null || inputLatinSequence.isEmpty) {
+      return List.empty();
     }
 
-      MatchResult<List<String>> severeMakeWord(final String inputLatinSequence) {
-        long time1 = Instant.now().toEpochMilli();
-        if (Strings.isBlank(inputLatinSequence)) {
-            return new MatchResult<>(Instant.now().toEpochMilli() - time1, Collections.emptyList());
-        }
-
-        List<List<String>> decomposedLatinSequences = decomposer.decompose(inputLatinSequence);
-        if (CollectionUtils.isEmpty(decomposedLatinSequences)) {
-            return new MatchResult<>(Instant.now().toEpochMilli() - time1, Collections.emptyList());
-        }
-
-        List<String> words = new ArrayList<>();
-        for (List<String> latinSequence : decomposedLatinSequences) {
-            List<LetterShapeSequence> letterShapeSequenceList = letterSplicer.severe(latinSequence);
-            if (letterShapeSequenceList == null || letterShapeSequenceList.isEmpty()) {
-                continue;
-            }
-            for (LetterShapeSequence lss : letterShapeSequenceList) {
-                words.add(lss.toString());
-            }
-        }
-
-        long time2 = Instant.now().toEpochMilli();
-        return new MatchResult<>(time2 - time1, words);
+    List<List<String>> decomposedLatinSequences =
+        decomposer.decompose(inputLatinSequence);
+    if (decomposedLatinSequences == null || decomposedLatinSequences.isEmpty) {
+      return List.empty();
     }
 
-      MatchResult<List<String>> makeWord(final String inputLatinSequence) {
-        long time1 = Instant.now().toEpochMilli();
-        if (Strings.isBlank(inputLatinSequence)) {
-            return new MatchResult<>(Instant.now().toEpochMilli() - time1, Collections.emptyList());
-        }
-        List<String> words = new ArrayList<>();
-        List<String> severeMatchResult = this.severeMakeWord(inputLatinSequence).getObj();
-        List<SuggestWord> fuzzyMatchSuggestResult = this.fuzzyMakeWord(inputLatinSequence).getObj();
-        List<String> fuzzyMatchResult = SuggestWord.convert(fuzzyMatchSuggestResult);
+    var suggestWordMap = new HashMap<String, SuggestWord>();
 
-        if (CollectionUtils.isEmpty(fuzzyMatchResult)) {
-            words.addAll(severeMatchResult);
+    // Original Java code uses synchronization
+    // If performance is slow, try to improve this part
+
+    for (List<String> latinSequence in decomposedLatinSequences) {
+      List<LetterShapeSequence> letterShapeSequenceList =
+          letterSplicer.fuzzy(latinSequence);
+      if (letterShapeSequenceList == null || letterShapeSequenceList.isEmpty) {
+        continue;
+      }
+      KeyFilter keyFilter = keyFilterFactory
+          .get(latinSequence[latinSequence.length - 1] + "-tail");
+      for (LetterShapeSequence ls in letterShapeSequenceList) {
+        String s = ls.toString();
+
+        List<SuggestWord> partSuggestWord = this.matchInBkMaps(s);
+        // if (partSuggestWord == null || partSuggestWord.isEmpty) {
+        //     blackSequenceService.add(s);
+        //     return null;
+        // }
+        // synchronized (suggestWordMap) {
+        for (SuggestWord sw in partSuggestWord) {
+          SuggestWord? tmp = suggestWordMap[sw.str];
+          if (tmp != null && tmp.score > sw.score) {
+            continue;
+          }
+          if (keyFilter == null || keyFilter.accept(sw.str)) {
+            suggestWordMap[sw.str] = sw;
+          }
+        }
+        // }
+
+        /// Blacklisting is not implemented
+        // if (blackSequenceService.contains(s)) {
+        //     continue;
+        // }
+      }
+    }
+
+    List<SuggestWord> suggestWordList = new List.from(suggestWordMap.values);
+    suggestWordList.sort((o1, o2) => o2.score.compareTo(o1.score));
+    int time2 = DateTime.now().millisecondsSinceEpoch;
+    print("key: $inputLatinSequence,run time:${time2 - time1}ms");
+    return suggestWordList;
+  }
+
+  List<String> severeMakeWord(final String inputLatinSequence) {
+    int time1 = DateTime.now().millisecondsSinceEpoch;
+    if (inputLatinSequence == null || inputLatinSequence.isEmpty) {
+      return List.empty();
+    }
+
+    List<List<String>> decomposedLatinSequences =
+        decomposer.decompose(inputLatinSequence);
+
+    if (decomposedLatinSequences == null || decomposedLatinSequences.isEmpty) {
+      return List.empty();
+    }
+
+    List<String> words = [];
+    for (List<String> latinSequence in decomposedLatinSequences) {
+      List<LetterShapeSequence> letterShapeSequenceList =
+          letterSplicer.severe(latinSequence);
+      if (letterShapeSequenceList == null || letterShapeSequenceList.isEmpty) {
+        continue;
+      }
+      for (LetterShapeSequence lss in letterShapeSequenceList) {
+        words.add(lss.toString());
+      }
+    }
+
+    int time2 = DateTime.now().millisecondsSinceEpoch;
+    return words;
+  }
+
+  List<String> makeWord(final String inputLatinSequence) {
+    int time1 = DateTime.now().millisecondsSinceEpoch;
+    if (inputLatinSequence == null || inputLatinSequence.isEmpty) {
+      return List.empty();
+    }
+    List<String> words = [];
+    List<String> severeMatchResult = this.severeMakeWord(inputLatinSequence);
+    List<SuggestWord> fuzzyMatchSuggestResult =
+        this.fuzzyMakeWord(inputLatinSequence);
+    List<String> fuzzyMatchResult =
+        SuggestWord.convert(fuzzyMatchSuggestResult);
+
+    if (fuzzyMatchResult == null || fuzzyMatchResult.isEmpty) {
+      words.addAll(severeMatchResult);
+    } else {
+      if (severeMatchResult == null || severeMatchResult.isEmpty) {
+        words.addAll(fuzzyMatchResult);
+      } else {
+        for (String severe in severeMatchResult) {
+          if (fuzzyMatchResult.contains(severe)) {
+            words.add(severe);
+            fuzzyMatchResult.remove(severe);
+          }
+        }
+        if (words == null || words.isEmpty) {
+          words.addAll(fuzzyMatchResult);
+          words.addAll(severeMatchResult);
         } else {
-            if (CollectionUtils.isEmpty(severeMatchResult)) {
-                words.addAll(fuzzyMatchResult);
-            } else {
-                for (String severe : severeMatchResult) {
-                    if (fuzzyMatchResult.contains(severe)) {
-                        words.add(severe);
-                        fuzzyMatchResult.remove(severe);
-                    }
-                }
-                if (CollectionUtils.isEmpty(words)) {
-                    words.addAll(fuzzyMatchResult);
-                    words.addAll(severeMatchResult);
-                } else {
-                    words.addAll(fuzzyMatchResult);
-                }
-            }
+          words.addAll(fuzzyMatchResult);
         }
-
-        long time2 = Instant.now().toEpochMilli();
-        logger.info("key:{},run time:{}ms", inputLatinSequence, time2 - time1);
-        return new MatchResult<>(time2 - time1, words);
+      }
     }
+
+    int time2 = DateTime.now().millisecondsSinceEpoch;
+    print('key: $inputLatinSequence, runtime: ${time2 - time1}ms');
+    return words;
+  }
 }
