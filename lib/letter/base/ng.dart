@@ -27,4 +27,9 @@ class NG extends Letter {
         latinKey, ZCode.achvg + ZCode.hinhir, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [ngMiddle, ngTail];
+  }
 }

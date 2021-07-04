@@ -69,4 +69,15 @@ class E extends Letter {
     ls.setSevereBehindAtRule(BehindRuleHolder.BEHIND_EMPTY);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      eHead,
+      eMiddle,
+      eTailOrhich,
+      eTailChachilga,
+      eTailVrvgsilga,
+    ];
+  }
 }

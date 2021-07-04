@@ -31,4 +31,13 @@ class W extends Letter {
         latinKey, ZCode.w_gohtai_silbi + ZCode.suul1, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      wHead,
+      wMiddle,
+      wTail,
+    ];
+  }
 }

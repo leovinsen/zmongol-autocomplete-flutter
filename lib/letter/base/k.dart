@@ -46,4 +46,15 @@ class K extends Letter {
         new LetterShape(latinKey, ZCode.k_egsilge, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      kHeadBaga,
+      kHeadIh,
+      kMiddleBaga,
+      kMiddleIh,
+      kTailEgsilge,
+    ];
+  }
 }

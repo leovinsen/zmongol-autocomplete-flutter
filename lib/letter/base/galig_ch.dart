@@ -15,4 +15,9 @@ class GaligCH extends Letter {
         latinKey, ZCode.gedes + ZCode.gedes, LetterLocation.HEAD);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [galigChHead];
+  }
 }

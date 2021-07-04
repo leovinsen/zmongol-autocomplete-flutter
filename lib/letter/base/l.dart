@@ -42,4 +42,14 @@ class L extends Letter {
         new LetterShape(latinKey, ZCode.l_hurbelge, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      lHead,
+      lMiddleAchvg,
+      lMiddleHurbelge,
+      lTailHurbelge,
+    ];
+  }
 }

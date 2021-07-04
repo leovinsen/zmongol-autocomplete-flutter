@@ -15,4 +15,9 @@ class GaligZH extends Letter {
         new LetterShape(latinKey, ZCode.galig_tvvrai, LetterLocation.HEAD);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [galigZhHead];
+  }
 }

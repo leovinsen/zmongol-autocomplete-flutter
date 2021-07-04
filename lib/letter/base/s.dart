@@ -31,4 +31,13 @@ class S extends Letter {
         new LetterShape(latinKey, ZCode.s_agshilga, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      sHead,
+      sMiddle,
+      sTail,
+    ];
+  }
 }

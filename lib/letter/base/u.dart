@@ -81,4 +81,16 @@ class U extends Letter {
     ls.setSevereBehindAtRule(BehindRuleHolder.BEHIND_EMPTY);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      uHead,
+      uMiddleGedesSilbi,
+      uMiddleGedes,
+      uTailGedes,
+      uTailBanbvrBaga,
+      uTailGedesSuul1,
+    ];
+  }
 }

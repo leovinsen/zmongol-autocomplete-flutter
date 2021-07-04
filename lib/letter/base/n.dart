@@ -52,4 +52,15 @@ class N extends Letter {
         new LetterShape(latinKey, ZCode.orhich, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      nHead,
+      nMiddleNAchvg,
+      nMiddleNOrhich,
+      nMiddleAchvg,
+      nTailOrhich,
+    ];
+  }
 }

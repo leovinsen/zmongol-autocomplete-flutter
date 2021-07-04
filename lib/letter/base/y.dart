@@ -42,4 +42,14 @@ class Y extends Letter {
         latinKey, ZCode.y_erteger_silbi + ZCode.suul1, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      yHead,
+      yMiddleErtegerSilbi,
+      yMiddleHvms,
+      yTail,
+    ];
+  }
 }

@@ -31,4 +31,13 @@ class Q extends Letter {
         latinKey, ZCode.q_acha + ZCode.suul1, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      qHead,
+      qMiddle,
+      qTail,
+    ];
+  }
 }

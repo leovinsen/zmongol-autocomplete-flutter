@@ -58,4 +58,16 @@ class D extends Letter {
         latinKey, ZCode.d_senj + ZCode.suul1, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      dHeadTSenj,
+      dHeadDSenj,
+      dMiddleDSenj,
+      dMiddleGedesAchvg,
+      dTailGedesOrhich,
+      dTailDSenjSuul1,
+    ];
+  }
 }

@@ -50,4 +50,15 @@ class B extends Letter {
         new LetterShape(latinKey, ZCode.b_banbvr_egsilge, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      bHeadBanbvrBaga,
+      bHeadBanbvrIh,
+      bMiddleBanbvrBaga,
+      bMiddleBanbvrIh,
+      bTailBanbvrEgsilge,
+    ];
+  }
 }

@@ -31,4 +31,13 @@ class J extends Letter {
         latinKey, ZCode.j_bosoo_silbi + ZCode.suul1, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      jHead,
+      jMiddle,
+      jTail,
+    ];
+  }
 }

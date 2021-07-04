@@ -31,4 +31,9 @@ class Z extends Letter {
         latinKey, ZCode.z_acha + ZCode.suul1, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [zHead, zMiddle, zTail];
+  }
 }

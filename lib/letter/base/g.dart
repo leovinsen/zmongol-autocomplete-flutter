@@ -122,4 +122,22 @@ class G extends Letter {
     ls.setSevereFrontAtRule(FrontRuleHolder.FRONT_IS_NOT_CHIGA_SEQUENCE);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      gHeadHanhar,
+      gHeadHinhir,
+      gHeadHunhur,
+      gMiddleHinhir,
+      gMiddleHunhur,
+      gMiddleDoubleNAchvg,
+      gMiddleDoubleAchvg,
+      gMiddleDoubleAchvgDagbvr,
+      gMiddleDvsaltaiAgsilga,
+      gMiddleAgsilga,
+      gTailAgsilga,
+      gTailSilbiVrvgsilga,
+    ];
+  }
 }

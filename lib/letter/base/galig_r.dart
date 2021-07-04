@@ -15,4 +15,9 @@ class GaligR extends Letter {
         new LetterShape(latinKey, ZCode.galig_r_malgai, LetterLocation.HEAD);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [galigRHead];
+  }
 }

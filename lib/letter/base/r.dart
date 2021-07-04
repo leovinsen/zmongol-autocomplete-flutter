@@ -42,4 +42,14 @@ class R extends Letter {
         new LetterShape(latinKey, ZCode.r_suul, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      rHead,
+      rMiddleErbgeljinSilbi,
+      rMiddleSuul,
+      rTail,
+    ];
+  }
 }

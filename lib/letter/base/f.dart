@@ -51,4 +51,15 @@ class F extends Letter {
         new LetterShape(latinKey, ZCode.f_chihi_egsilge, LetterLocation.TAIL);
     return ls;
   }
+
+  @override
+  List<LetterShape> getLetterShapes() {
+    return [
+      fHeadChihiBaga,
+      fHeadChihiIh,
+      fMiddleChihiBaga,
+      fMiddleChihiIh,
+      fTailChihiEgsilge,
+    ];
+  }
 }
