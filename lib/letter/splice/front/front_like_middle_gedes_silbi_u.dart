@@ -13,14 +13,14 @@ class FrontLikeMiddleGedesSilbiU implements SplicingAtFrontRule {
     if (!this.notMatchShapes.isEmpty) {
       return;
     }
-    this.notMatchShapes.add(Letters.B.bHeadBanbvrBaga);
-    this.notMatchShapes.add(Letters.P.pHeadChihiBaga);
-    this.notMatchShapes.add(Letters.H.hHeadHanhar);
-    this.notMatchShapes.add(Letters.H.hHeadHinhir);
-    this.notMatchShapes.add(Letters.G.gHeadHanhar);
-    this.notMatchShapes.add(Letters.G.gHeadHinhir);
-    this.notMatchShapes.add(Letters.F.fHeadChihiBaga);
-    this.notMatchShapes.add(Letters.K.kHeadBaga);
+    this.notMatchShapes.add(Letters.b.bHeadBanbvrBaga);
+    this.notMatchShapes.add(Letters.p.pHeadChihiBaga);
+    this.notMatchShapes.add(Letters.h.hHeadHanhar);
+    this.notMatchShapes.add(Letters.h.hHeadHinhir);
+    this.notMatchShapes.add(Letters.g.gHeadHanhar);
+    this.notMatchShapes.add(Letters.g.gHeadHinhir);
+    this.notMatchShapes.add(Letters.f.fHeadChihiBaga);
+    this.notMatchShapes.add(Letters.k.kHeadBaga);
   }
 
   @override

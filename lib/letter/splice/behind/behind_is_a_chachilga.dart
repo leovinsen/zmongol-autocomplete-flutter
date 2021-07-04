@@ -8,6 +8,6 @@ class BehindIsAChachilga implements SplicingAtBehindRule {
     if (ls == null) {
       return false;
     }
-    return ls.equals(Letters.A.aTailChachilga);
+    return ls.equals(Letters.a.aTailChachilga);
   }
 }

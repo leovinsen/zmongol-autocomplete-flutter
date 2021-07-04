@@ -9,11 +9,11 @@ class BehindIsEhshig implements SplicingAtBehindRule {
     if (!matchLetters.isEmpty) {
       return;
     }
-    matchLetters.add(Letters.A.getLatinKey());
-    matchLetters.add(Letters.E.getLatinKey());
-    matchLetters.add(Letters.I.getLatinKey());
-    matchLetters.add(Letters.O.getLatinKey());
-    matchLetters.add(Letters.U.getLatinKey());
+    matchLetters.add(Letters.a.getLatinKey());
+    matchLetters.add(Letters.e.getLatinKey());
+    matchLetters.add(Letters.i.getLatinKey());
+    matchLetters.add(Letters.o.getLatinKey());
+    matchLetters.add(Letters.u.getLatinKey());
   }
 
   @override

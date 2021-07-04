@@ -12,14 +12,14 @@ class FrontLikeTailGedesO implements SplicingAtFrontRule {
     if (!this.matchShapes.isEmpty) {
       return;
     }
-    this.matchShapes.add(Letters.B.bHeadBanbvrIh);
-    this.matchShapes.add(Letters.B.bMiddleBanbvrIh);
-    this.matchShapes.add(Letters.P.pHeadChihiIh);
-    this.matchShapes.add(Letters.P.pMiddleChihiIh);
-    this.matchShapes.add(Letters.F.fHeadChihiIh);
-    this.matchShapes.add(Letters.F.fMiddleChihiIh);
-    this.matchShapes.add(Letters.K.kHeadIh);
-    this.matchShapes.add(Letters.K.kMiddleIh);
+    this.matchShapes.add(Letters.b.bHeadBanbvrIh);
+    this.matchShapes.add(Letters.b.bMiddleBanbvrIh);
+    this.matchShapes.add(Letters.p.pHeadChihiIh);
+    this.matchShapes.add(Letters.p.pMiddleChihiIh);
+    this.matchShapes.add(Letters.f.fHeadChihiIh);
+    this.matchShapes.add(Letters.f.fMiddleChihiIh);
+    this.matchShapes.add(Letters.k.kHeadIh);
+    this.matchShapes.add(Letters.k.kMiddleIh);
   }
 
   @override

@@ -13,15 +13,15 @@ class FrontLikeMiddleGedesU implements SplicingAtFrontRule {
     if (!this.notMatchShapes.isEmpty) {
       return;
     }
-    this.notMatchShapes.add(Letters.B.bMiddleBanbvrBaga);
-    this.notMatchShapes.add(Letters.P.pMiddleChihiBaga);
-    this.notMatchShapes.add(Letters.H.hMiddleHinhir);
-    this.notMatchShapes.add(Letters.H.hMiddleDoubleAchvg);
-    this.notMatchShapes.add(Letters.G.gMiddleHinhir);
-    this.notMatchShapes.add(Letters.G.gMiddleDoubleNAchvg);
-    this.notMatchShapes.add(Letters.G.gMiddleDoubleAchvg);
-    this.notMatchShapes.add(Letters.F.fMiddleChihiBaga);
-    this.notMatchShapes.add(Letters.K.kMiddleBaga);
+    this.notMatchShapes.add(Letters.b.bMiddleBanbvrBaga);
+    this.notMatchShapes.add(Letters.p.pMiddleChihiBaga);
+    this.notMatchShapes.add(Letters.h.hMiddleHinhir);
+    this.notMatchShapes.add(Letters.h.hMiddleDoubleAchvg);
+    this.notMatchShapes.add(Letters.g.gMiddleHinhir);
+    this.notMatchShapes.add(Letters.g.gMiddleDoubleNAchvg);
+    this.notMatchShapes.add(Letters.g.gMiddleDoubleAchvg);
+    this.notMatchShapes.add(Letters.f.fMiddleChihiBaga);
+    this.notMatchShapes.add(Letters.k.kMiddleBaga);
   }
 
   @override

@@ -13,24 +13,24 @@ class FrontLikeMiddleO implements SplicingAtFrontRule {
     if (!this.notMatchShapes.isEmpty) {
       return;
     }
-    this.notMatchShapes.add(Letters.B.bHeadBanbvrBaga);
-    this.notMatchShapes.add(Letters.B.bMiddleBanbvrBaga);
-    this.notMatchShapes.add(Letters.P.pHeadChihiBaga);
-    this.notMatchShapes.add(Letters.P.pMiddleChihiBaga);
-    this.notMatchShapes.add(Letters.H.hHeadHinhir);
-    this.notMatchShapes.add(Letters.H.hHeadHunhur);
-    this.notMatchShapes.add(Letters.H.hMiddleHinhir);
-    this.notMatchShapes.add(Letters.H.hMiddleHunhur);
+    this.notMatchShapes.add(Letters.b.bHeadBanbvrBaga);
+    this.notMatchShapes.add(Letters.b.bMiddleBanbvrBaga);
+    this.notMatchShapes.add(Letters.p.pHeadChihiBaga);
+    this.notMatchShapes.add(Letters.p.pMiddleChihiBaga);
+    this.notMatchShapes.add(Letters.h.hHeadHinhir);
+    this.notMatchShapes.add(Letters.h.hHeadHunhur);
+    this.notMatchShapes.add(Letters.h.hMiddleHinhir);
+    this.notMatchShapes.add(Letters.h.hMiddleHunhur);
 
-    this.notMatchShapes.add(Letters.G.gHeadHinhir);
-    this.notMatchShapes.add(Letters.G.gHeadHunhur);
-    this.notMatchShapes.add(Letters.G.gMiddleHunhur);
-    this.notMatchShapes.add(Letters.G.gMiddleHinhir);
+    this.notMatchShapes.add(Letters.g.gHeadHinhir);
+    this.notMatchShapes.add(Letters.g.gHeadHunhur);
+    this.notMatchShapes.add(Letters.g.gMiddleHunhur);
+    this.notMatchShapes.add(Letters.g.gMiddleHinhir);
 
-    this.notMatchShapes.add(Letters.F.fHeadChihiBaga);
-    this.notMatchShapes.add(Letters.F.fMiddleChihiBaga);
-    this.notMatchShapes.add(Letters.K.kHeadBaga);
-    this.notMatchShapes.add(Letters.K.kMiddleBaga);
+    this.notMatchShapes.add(Letters.f.fHeadChihiBaga);
+    this.notMatchShapes.add(Letters.f.fMiddleChihiBaga);
+    this.notMatchShapes.add(Letters.k.kHeadBaga);
+    this.notMatchShapes.add(Letters.k.kMiddleBaga);
   }
 
   @override

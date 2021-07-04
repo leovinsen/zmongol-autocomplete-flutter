@@ -13,7 +13,7 @@ class FrontIsNotMiddleSD implements SplicingAtFrontRule {
     if (last == null) {
       return false;
     }
-    return !last.equals(Letters.S.sMiddle) &&
-        !last.equals(Letters.D.dMiddleGedesAchvg);
+    return !last.equals(Letters.s.sMiddle) &&
+        !last.equals(Letters.d.dMiddleGedesAchvg);
   }
 }

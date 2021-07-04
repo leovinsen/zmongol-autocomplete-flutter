@@ -13,13 +13,13 @@ class FrontLikeMiddleII implements SplicingAtFrontRule {
     if (!this.matchShapes.isEmpty) {
       return;
     }
-    this.matchShapes.add(Letters.A.aHead);
-    this.matchShapes.add(Letters.A.aMiddle);
-    this.matchShapes.add(Letters.E.eHead);
-    this.matchShapes.add(Letters.E.eMiddle);
+    this.matchShapes.add(Letters.a.aHead);
+    this.matchShapes.add(Letters.a.aMiddle);
+    this.matchShapes.add(Letters.e.eHead);
+    this.matchShapes.add(Letters.e.eMiddle);
 //        this.matchShapes.add(Letters.O.oHeadGedes);
-    this.matchShapes.add(Letters.O.oHeadTitemGedes);
-    this.matchShapes.add(Letters.O.oMiddleGedes);
+    this.matchShapes.add(Letters.o.oHeadTitemGedes);
+    this.matchShapes.add(Letters.o.oMiddleGedes);
   }
 
   @override

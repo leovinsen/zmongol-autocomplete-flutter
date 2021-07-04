@@ -8,7 +8,7 @@ class BehindIsAEChachilga implements SplicingAtBehindRule {
     if (ls == null) {
       return false;
     }
-    return ls.equals(Letters.A.aTailChachilga) ||
-        ls.equals(Letters.E.eTailChachilga);
+    return ls.equals(Letters.a.aTailChachilga) ||
+        ls.equals(Letters.e.eTailChachilga);
   }
 }

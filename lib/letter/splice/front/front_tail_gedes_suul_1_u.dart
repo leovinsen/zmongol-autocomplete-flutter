@@ -13,10 +13,10 @@ class FrontTailGedesSuul1U implements SplicingAtFrontRule {
     if (!this.notMatchShapes.isEmpty) {
       return;
     }
-    this.notMatchShapes.add(Letters.H.hHeadHinhir);
-    this.notMatchShapes.add(Letters.H.hHeadHanhar);
-    this.notMatchShapes.add(Letters.G.gHeadHinhir);
-    this.notMatchShapes.add(Letters.G.gHeadHanhar);
+    this.notMatchShapes.add(Letters.h.hHeadHinhir);
+    this.notMatchShapes.add(Letters.h.hHeadHanhar);
+    this.notMatchShapes.add(Letters.g.gHeadHinhir);
+    this.notMatchShapes.add(Letters.g.gHeadHanhar);
   }
 
   @override

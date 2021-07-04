@@ -8,7 +8,7 @@ class BehindIsChingaEhshig implements SplicingAtBehindRule {
     if (ls == null) {
       return false;
     }
-    return ls.getLatinKey() == (Letters.A.getLatinKey()) ||
-        ls.getLatinKey() == (Letters.O.getLatinKey());
+    return ls.getLatinKey() == (Letters.a.getLatinKey()) ||
+        ls.getLatinKey() == (Letters.o.getLatinKey());
   }
 }

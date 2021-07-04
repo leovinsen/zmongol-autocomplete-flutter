@@ -12,18 +12,18 @@ class FrontLikeTailSilbiSuul1I implements SplicingAtFrontRule {
     if (!this.matchShapes.isEmpty) {
       return;
     }
-    matchShapes.add(Letters.B.bHeadBanbvrBaga);
-    matchShapes.add(Letters.B.bMiddleBanbvrBaga);
-    matchShapes.add(Letters.P.pHeadChihiBaga);
-    matchShapes.add(Letters.P.pMiddleChihiBaga);
-    matchShapes.add(Letters.H.hHeadHinhir);
-    matchShapes.add(Letters.H.hMiddleHinhir);
-    matchShapes.add(Letters.G.gHeadHinhir);
-    matchShapes.add(Letters.G.gMiddleHinhir);
-    matchShapes.add(Letters.F.fHeadChihiBaga);
-    matchShapes.add(Letters.F.fMiddleChihiBaga);
-    matchShapes.add(Letters.K.kHeadBaga);
-    matchShapes.add(Letters.K.kMiddleBaga);
+    matchShapes.add(Letters.b.bHeadBanbvrBaga);
+    matchShapes.add(Letters.b.bMiddleBanbvrBaga);
+    matchShapes.add(Letters.p.pHeadChihiBaga);
+    matchShapes.add(Letters.p.pMiddleChihiBaga);
+    matchShapes.add(Letters.h.hHeadHinhir);
+    matchShapes.add(Letters.h.hMiddleHinhir);
+    matchShapes.add(Letters.g.gHeadHinhir);
+    matchShapes.add(Letters.g.gMiddleHinhir);
+    matchShapes.add(Letters.f.fHeadChihiBaga);
+    matchShapes.add(Letters.f.fMiddleChihiBaga);
+    matchShapes.add(Letters.k.kHeadBaga);
+    matchShapes.add(Letters.k.kMiddleBaga);
   }
 
   @override

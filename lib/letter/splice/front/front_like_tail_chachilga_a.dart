@@ -12,15 +12,15 @@ class FrontLikeTailChachilgaA implements SplicingAtFrontRule {
     if (!this.matchShapes.isEmpty) {
       return;
     }
-    this.matchShapes.add(Letters.O.oMiddleBanbvrBaga);
-    this.matchShapes.add(Letters.N.nMiddleNOrhich);
-    this.matchShapes.add(Letters.H.hMiddleAgsilga);
-    this.matchShapes.add(Letters.G.gMiddleDvsaltaiAgsilga);
-    this.matchShapes.add(Letters.G.gMiddleAgsilga);
-    this.matchShapes.add(Letters.M.mMiddleHurbelge);
-    this.matchShapes.add(Letters.L.lMiddleHurbelge);
-    this.matchShapes.add(Letters.Y.yMiddleHvms);
-    this.matchShapes.add(Letters.R.rMiddleSuul);
+    this.matchShapes.add(Letters.o.oMiddleBanbvrBaga);
+    this.matchShapes.add(Letters.n.nMiddleNOrhich);
+    this.matchShapes.add(Letters.h.hMiddleAgsilga);
+    this.matchShapes.add(Letters.g.gMiddleDvsaltaiAgsilga);
+    this.matchShapes.add(Letters.g.gMiddleAgsilga);
+    this.matchShapes.add(Letters.m.mMiddleHurbelge);
+    this.matchShapes.add(Letters.l.lMiddleHurbelge);
+    this.matchShapes.add(Letters.y.yMiddleHvms);
+    this.matchShapes.add(Letters.r.rMiddleSuul);
   }
 
   @override

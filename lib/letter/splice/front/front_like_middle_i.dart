@@ -12,31 +12,31 @@ class FrontLikeMiddleI implements SplicingAtFrontRule {
     if (!this.notMatchShapes.isEmpty) {
       return;
     }
-    this.notMatchShapes.add(Letters.A.aHead);
-    this.notMatchShapes.add(Letters.A.aMiddle);
-    this.notMatchShapes.add(Letters.E.eHead);
-    this.notMatchShapes.add(Letters.E.eMiddle);
+    this.notMatchShapes.add(Letters.a.aHead);
+    this.notMatchShapes.add(Letters.a.aMiddle);
+    this.notMatchShapes.add(Letters.e.eHead);
+    this.notMatchShapes.add(Letters.e.eMiddle);
 //        this.notMatchShapes.add(Letters.O.oHeadGedes);
-    this.notMatchShapes.add(Letters.O.oHeadTitemGedes);
-    this.notMatchShapes.add(Letters.O.oMiddleGedes);
-    this.notMatchShapes.add(Letters.U.uMiddleGedes);
-    this.notMatchShapes.add(Letters.B.bHeadBanbvrIh);
-    this.notMatchShapes.add(Letters.B.bMiddleBanbvrIh);
-    this.notMatchShapes.add(Letters.P.pHeadChihiIh);
-    this.notMatchShapes.add(Letters.P.pMiddleChihiIh);
-    this.notMatchShapes.add(Letters.H.hHeadHunhur);
-    this.notMatchShapes.add(Letters.H.hHeadHanhar);
-    this.notMatchShapes.add(Letters.H.hMiddleHunhur);
-    this.notMatchShapes.add(Letters.H.hMiddleDoubleAchvg);
-    this.notMatchShapes.add(Letters.G.gHeadHanhar);
-    this.notMatchShapes.add(Letters.G.gHeadHunhur);
-    this.notMatchShapes.add(Letters.G.gMiddleHunhur);
-    this.notMatchShapes.add(Letters.G.gMiddleDoubleAchvg);
-    this.notMatchShapes.add(Letters.G.gMiddleDoubleNAchvg);
-    this.notMatchShapes.add(Letters.F.fHeadChihiIh);
-    this.notMatchShapes.add(Letters.F.fMiddleChihiIh);
-    this.notMatchShapes.add(Letters.K.kHeadIh);
-    this.notMatchShapes.add(Letters.K.kMiddleIh);
+    this.notMatchShapes.add(Letters.o.oHeadTitemGedes);
+    this.notMatchShapes.add(Letters.o.oMiddleGedes);
+    this.notMatchShapes.add(Letters.u.uMiddleGedes);
+    this.notMatchShapes.add(Letters.b.bHeadBanbvrIh);
+    this.notMatchShapes.add(Letters.b.bMiddleBanbvrIh);
+    this.notMatchShapes.add(Letters.p.pHeadChihiIh);
+    this.notMatchShapes.add(Letters.p.pMiddleChihiIh);
+    this.notMatchShapes.add(Letters.h.hHeadHunhur);
+    this.notMatchShapes.add(Letters.h.hHeadHanhar);
+    this.notMatchShapes.add(Letters.h.hMiddleHunhur);
+    this.notMatchShapes.add(Letters.h.hMiddleDoubleAchvg);
+    this.notMatchShapes.add(Letters.g.gHeadHanhar);
+    this.notMatchShapes.add(Letters.g.gHeadHunhur);
+    this.notMatchShapes.add(Letters.g.gMiddleHunhur);
+    this.notMatchShapes.add(Letters.g.gMiddleDoubleAchvg);
+    this.notMatchShapes.add(Letters.g.gMiddleDoubleNAchvg);
+    this.notMatchShapes.add(Letters.f.fHeadChihiIh);
+    this.notMatchShapes.add(Letters.f.fMiddleChihiIh);
+    this.notMatchShapes.add(Letters.k.kHeadIh);
+    this.notMatchShapes.add(Letters.k.kMiddleIh);
   }
 
   @override

@@ -12,14 +12,14 @@ class FrontLikeTailVrvgsilgaA implements SplicingAtFrontRule {
     if (!this.matchShapes.isEmpty) {
       return;
     }
-    this.matchShapes.add(Letters.B.bHeadBanbvrBaga);
-    this.matchShapes.add(Letters.B.bMiddleBanbvrBaga);
-    this.matchShapes.add(Letters.P.pHeadChihiBaga);
-    this.matchShapes.add(Letters.P.pMiddleChihiBaga);
-    this.matchShapes.add(Letters.F.fHeadChihiBaga);
-    this.matchShapes.add(Letters.F.fMiddleChihiBaga);
-    this.matchShapes.add(Letters.K.kHeadBaga);
-    this.matchShapes.add(Letters.K.kMiddleBaga);
+    this.matchShapes.add(Letters.b.bHeadBanbvrBaga);
+    this.matchShapes.add(Letters.b.bMiddleBanbvrBaga);
+    this.matchShapes.add(Letters.p.pHeadChihiBaga);
+    this.matchShapes.add(Letters.p.pMiddleChihiBaga);
+    this.matchShapes.add(Letters.f.fHeadChihiBaga);
+    this.matchShapes.add(Letters.f.fMiddleChihiBaga);
+    this.matchShapes.add(Letters.k.kHeadBaga);
+    this.matchShapes.add(Letters.k.kMiddleBaga);
   }
 
   @override
