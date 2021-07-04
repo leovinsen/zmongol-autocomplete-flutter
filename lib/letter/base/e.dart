@@ -5,24 +5,24 @@ import 'package:ime_mongol_package/letter/splice/behind_rule_holder.dart';
 import 'package:ime_mongol_package/letter/splice/front_rule_holder.dart';
 import 'package:ime_mongol_package/letter/zcode.dart';
 
-class A extends Letter {
-  late LetterShape aHead;
-  late LetterShape aMiddle;
-  late LetterShape aTailOrhich;
-  late LetterShape aTailChachilga;
-  late LetterShape aTailVrvgsilga;
+class E extends Letter {
+  late LetterShape eHead;
+  late LetterShape eMiddle;
+  late LetterShape eTailOrhich;
+  late LetterShape eTailChachilga;
+  late LetterShape eTailVrvgsilga;
 
-  A() : super("a") {
-    aHead = createAHead().newUnmodifiable();
-    aMiddle = createAMiddle().newUnmodifiable();
-    aTailOrhich = createATailOrhich().newUnmodifiable();
-    aTailChachilga = createATailChachilga().newUnmodifiable();
-    aTailVrvgsilga = createATailVrvgsilga().newUnmodifiable();
+  E() : super("e") {
+    eHead = createEHeadShape().newUnmodifiable();
+    eMiddle = createEMiddleShape().newUnmodifiable();
+    eTailOrhich = createETailOrhich().newUnmodifiable();
+    eTailChachilga = createETailChachilga().newUnmodifiable();
+    eTailVrvgsilga = createETailVrvgsilga().newUnmodifiable();
   }
 
-  LetterShape createAHead() {
-    LetterShape ls = new LetterShape(
-        latinKey, ZCode.titem + ZCode.achvg, LetterLocation.HEAD);
+  LetterShape createEHeadShape() {
+    LetterShape ls =
+        new LetterShape(latinKey, ZCode.titem, LetterLocation.HEAD);
     ls.setFuzzyFrontAtRule(FrontRuleHolder.FRONT_EMPTY);
     ls.setFuzzyBehindAtRule(null);
     ls.setSevereFrontAtRule(FrontRuleHolder.FRONT_EMPTY);
@@ -30,42 +30,42 @@ class A extends Letter {
     return ls;
   }
 
-  LetterShape createAMiddle() {
+  LetterShape createEMiddleShape() {
     LetterShape ls =
         new LetterShape(latinKey, ZCode.achvg, LetterLocation.MIDDLE);
     ls.setFuzzyFrontAtRule(FrontRuleHolder.FRONT_NOT_EMPTY);
     ls.setFuzzyBehindAtRule(null);
-    ls.setSevereFrontAtRule(FrontRuleHolder.FRONT_LIKE_MIDDLE_A);
+    ls.setSevereFrontAtRule(FrontRuleHolder.FRONT_LIKE_MIDDLE_E);
     ls.setSevereBehindAtRule(BehindRuleHolder.BEHIND_NOT_EMPTY);
     return ls;
   }
 
-  LetterShape createATailOrhich() {
+  LetterShape createETailOrhich() {
     LetterShape ls =
         new LetterShape(latinKey, ZCode.orhich, LetterLocation.TAIL);
     ls.setFuzzyFrontAtRule(FrontRuleHolder.FRONT_NOT_EMPTY);
     ls.setFuzzyBehindAtRule(BehindRuleHolder.BEHIND_EMPTY);
-    ls.setSevereFrontAtRule(FrontRuleHolder.FRONT_LIKE_TAIL_ORHICH_A);
+    ls.setSevereFrontAtRule(FrontRuleHolder.FRONT_LIKE_TAIL_ORHICH_E);
     ls.setSevereBehindAtRule(BehindRuleHolder.BEHIND_EMPTY);
     return ls;
   }
 
-  LetterShape createATailChachilga() {
+  LetterShape createETailChachilga() {
     LetterShape ls = new LetterShape(
         latinKey, ZCode.vrvgsilga_or_chachilga, LetterLocation.TAIL);
     ls.setFuzzyFrontAtRule(FrontRuleHolder.FRONT_NOT_EMPTY);
     ls.setFuzzyBehindAtRule(BehindRuleHolder.BEHIND_EMPTY);
-    ls.setSevereFrontAtRule(FrontRuleHolder.FRONT_LIKE_TAIL_CHACHILGA_A);
+    ls.setSevereFrontAtRule(FrontRuleHolder.FRONT_LIKE_TAIL_CHACHILGA_E);
     ls.setSevereBehindAtRule(BehindRuleHolder.BEHIND_EMPTY);
     return ls;
   }
 
-  LetterShape createATailVrvgsilga() {
+  LetterShape createETailVrvgsilga() {
     LetterShape ls = new LetterShape(latinKey,
         ZCode.achvg + ZCode.vrvgsilga_or_chachilga, LetterLocation.TAIL);
     ls.setFuzzyFrontAtRule(FrontRuleHolder.FRONT_NOT_EMPTY);
     ls.setFuzzyBehindAtRule(BehindRuleHolder.BEHIND_EMPTY);
-    ls.setSevereFrontAtRule(FrontRuleHolder.FRONT_LIKE_TAIL_VRVGSILGA_A);
+    ls.setSevereFrontAtRule(FrontRuleHolder.FRONT_LIKE_TAIL_VRVGSILGA_E);
     ls.setSevereBehindAtRule(BehindRuleHolder.BEHIND_EMPTY);
     return ls;
   }
