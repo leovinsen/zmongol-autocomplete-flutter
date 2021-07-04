@@ -28,13 +28,19 @@ class InputMethodService {
 
   final KeyFilterFactory keyFilterFactory = new KeyFilterFactory();
 
-  InputMethodService() {
-    _loadWordsIntoMemory;
+  Future<void> initialize() async {
+    print('initializing');
+    int time1 = DateTime.now().millisecondsSinceEpoch;
+    await wordRepository.initialize();
+    await _loadWordsIntoMemory();
+    int time2 = DateTime.now().millisecondsSinceEpoch;
+
+    print('initialized in ${time2 - time1} ms');
   }
+
   Future<void> _loadWordsIntoMemory() async {
     int maxLength =
         await wordRepository.queryMaxLengthByFrequency(FREQUENCY_BOUND - 1);
-
     int totalRecords = 0;
     while (maxLength > 0) {
       BurkhardKellerTree? bkTree = _lengthKeyBkMap[maxLength];
@@ -184,31 +190,32 @@ class InputMethodService {
     }
     List<String> words = [];
     List<String> severeMatchResult = this.severeMakeWord(inputLatinSequence);
-    List<SuggestWord> fuzzyMatchSuggestResult =
-        this.fuzzyMakeWord(inputLatinSequence);
-    List<String> fuzzyMatchResult =
-        SuggestWord.convert(fuzzyMatchSuggestResult);
+    print('completed severeMakeWord');
+    // List<SuggestWord> fuzzyMatchSuggestResult =
+    //     this.fuzzyMakeWord(inputLatinSequence);
+    // List<String> fuzzyMatchResult =
+    //     SuggestWord.convert(fuzzyMatchSuggestResult);
 
-    if (fuzzyMatchResult == null || fuzzyMatchResult.isEmpty) {
-      words.addAll(severeMatchResult);
-    } else {
-      if (severeMatchResult == null || severeMatchResult.isEmpty) {
-        words.addAll(fuzzyMatchResult);
-      } else {
-        for (String severe in severeMatchResult) {
-          if (fuzzyMatchResult.contains(severe)) {
-            words.add(severe);
-            fuzzyMatchResult.remove(severe);
-          }
-        }
-        if (words == null || words.isEmpty) {
-          words.addAll(fuzzyMatchResult);
-          words.addAll(severeMatchResult);
-        } else {
-          words.addAll(fuzzyMatchResult);
-        }
-      }
-    }
+    // if (fuzzyMatchResult == null || fuzzyMatchResult.isEmpty) {
+    //   words.addAll(severeMatchResult);
+    // } else {
+    //   if (severeMatchResult == null || severeMatchResult.isEmpty) {
+    //     words.addAll(fuzzyMatchResult);
+    //   } else {
+    //     for (String severe in severeMatchResult) {
+    //       if (fuzzyMatchResult.contains(severe)) {
+    //         words.add(severe);
+    //         fuzzyMatchResult.remove(severe);
+    //       }
+    //     }
+    //     if (words == null || words.isEmpty) {
+    //       words.addAll(fuzzyMatchResult);
+    //       words.addAll(severeMatchResult);
+    //     } else {
+    //       words.addAll(fuzzyMatchResult);
+    //     }
+    //   }
+    // }
 
     int time2 = DateTime.now().millisecondsSinceEpoch;
     print('key: $inputLatinSequence, runtime: ${time2 - time1}ms');
