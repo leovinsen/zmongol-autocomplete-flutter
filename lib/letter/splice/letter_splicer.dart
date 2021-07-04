@@ -32,8 +32,7 @@ class LetterSplicer {
         }
         int size = (completeLssList.length > 0 ? completeLssList.length : 1) *
             letterShapeList.length;
-        List<LetterShapeSequence> newWholeLssList =
-            List.generate(size, (index) => LetterShapeSequence());
+        List<LetterShapeSequence> newWholeLssList = [];
 
         LetterShapeSequence lss;
         if (completeLssList == null || completeLssList.isEmpty) {
