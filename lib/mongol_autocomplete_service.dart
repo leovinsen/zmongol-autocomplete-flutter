@@ -223,7 +223,7 @@ class InputMethodService {
     }
 
     int time2 = DateTime.now().millisecondsSinceEpoch;
-    print('key: $inputLatinSequence, runtime: ${time2 - time1}ms');
+    print('makeWord() key: $inputLatinSequence, runtime: ${time2 - time1}ms');
     return words;
   }
 }

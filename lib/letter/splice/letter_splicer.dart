@@ -65,8 +65,8 @@ class LetterSplicer {
       }
       return completeLssList;
     } finally {
-      print(
-          "latin to zcode run time: ${DateTime.now().millisecondsSinceEpoch - time1}");
+      // print(
+      //     "latin to zcode run time: ${DateTime.now().millisecondsSinceEpoch - time1}");
     }
   }
 
@@ -128,8 +128,8 @@ class LetterSplicer {
       }
       return completeLssList;
     } finally {
-      print(
-          "latin to zcode run time: ${DateTime.now().millisecondsSinceEpoch - time1}");
+      // print(
+      //     "latin to zcode run time: ${DateTime.now().millisecondsSinceEpoch - time1}");
     }
   }
 }

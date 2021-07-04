@@ -36,12 +36,12 @@ class Decomposer {
   }
 
   List<List<String>> decompose(final String str) {
-    int time1 = DateTime.now().millisecondsSinceEpoch;
+    // int time1 = DateTime.now().millisecondsSinceEpoch;
     try {
       return this._decompose([], str);
     } finally {
-      print(
-          'decompose runtime: ${DateTime.now().millisecondsSinceEpoch - time1}ms');
+      // print(
+      //     'decompose runtime: ${DateTime.now().millisecondsSinceEpoch - time1}ms');
     }
   }
 

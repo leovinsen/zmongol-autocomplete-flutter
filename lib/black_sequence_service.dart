@@ -27,10 +27,12 @@ class BlackSequenceService {
   }
 
   void persistNewRecords() {
-    print('persisting: ${_newBlackSet.length} records');
-    _repository.insertAll(List.from(_newBlackSet));
-    _blackSet.addAll(_newBlackSet);
-    _newBlackSet.clear();
+    if (_newBlackSet.isNotEmpty) {
+      print('persisting: ${_newBlackSet.length} records');
+      _repository.insertAll(List.from(_newBlackSet));
+      _blackSet.addAll(_newBlackSet);
+      _newBlackSet.clear();
+    }
   }
 
   // @Scheduled(initialDelay = 1000, fixedRate = 5 * 1000)
