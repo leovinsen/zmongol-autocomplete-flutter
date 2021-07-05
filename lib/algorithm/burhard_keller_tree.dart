@@ -74,7 +74,7 @@ class Node {
 
   //Java implementation uses TreeMap
   //Using SplayTreeMap because no native TreeMap dart implementation
-  final SplayTreeMap<int, Node> children = new SplayTreeMap<int, Node>();
+  final Map<int, Node> children = new Map<int, Node>();
 
   Node(this.mountObject);
 
