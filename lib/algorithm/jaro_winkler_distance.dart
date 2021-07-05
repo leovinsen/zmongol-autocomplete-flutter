@@ -53,7 +53,7 @@ class JaroWinklerDistance {
 
     for (prefix = 0; transpositions < max.length; ++transpositions) {
       if (matchFlags[transpositions]) {
-        ms2.insert(prefix, min.substring(transpositions, transpositions + 1));
+        ms2.insert(prefix, max.substring(transpositions, transpositions + 1));
         ++prefix;
       }
     }
