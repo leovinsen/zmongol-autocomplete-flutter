@@ -13,11 +13,14 @@ class MongolWordsRepository {
   /// WHERE length = ? AND frequency > ?
   Future<List<WordEntity>> queryWordsByLengthAndGtFrequency(
       {required int length, required int frequency}) async {
-    List<Map<String, dynamic>> list = await _getDb().query(
-      'word',
-      where: '"length" = ? AND "frequency" > ?',
-      whereArgs: [length, frequency],
-    );
+    List<Map<String, dynamic>> list = await _getDb().rawQuery(
+        'SELECT * FROM word WHERE length = ? and frequency > ?',
+        [length, frequency]);
+    // List<Map<String, dynamic>> list = await _getDb().query(
+    //   'word',
+    //   where: '"length" = ? AND "frequency" > ?',
+    //   whereArgs: [length, frequency],
+    // );
     return list.map((row) => WordEntity.fromMap(row)).toList();
   }
 
