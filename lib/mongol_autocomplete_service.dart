@@ -16,7 +16,7 @@ import 'keyboard/decomposer.dart';
 import 'letter/splice/letter_splicer.dart';
 
 class InputMethodService {
-  static const String ROOT_STRING = "ᡥᡪᡱᡪᢝ";
+  static const String ROOT_STRING = "ᡥᡪᡱᡪᢝᡥᡪᡱᡪᢝ";
   static const int DEFAULT_CAPACITY = 64;
   static const int FREQUENCY_BOUND = 6;
 

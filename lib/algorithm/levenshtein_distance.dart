@@ -14,6 +14,10 @@ int getLevenshteinDistance(String? a, String? b) {
 
     for (int i = 1; i <= n; i++) {
       d[i][0] = i;
+    }
+
+    for (int i = 1; i <= n; i++) {
+      d[i][0] = i;
       for (int j = 1; j <= m; j++) {
         int cost = a!.substring(i - 1, i) == b!.substring(j - 1, j) ? 0 : 1;
         d[i][j] =
