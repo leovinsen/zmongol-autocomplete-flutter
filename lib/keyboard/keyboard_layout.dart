@@ -77,8 +77,14 @@ class KeyboardLayout {
     }
 
     List<LetterShape> letterShapeList = [];
+
     letterList.forEach((letter) {
-      letterShapeList.addAll(letter.getLetterShapes());
+      var temp = letter.getLetterShapes();
+      for (LetterShape ls in temp) {
+        if (ls.getLocation() == letterLocation) {
+          letterShapeList.add(ls);
+        }
+      }
     });
 
     return letterShapeList;
