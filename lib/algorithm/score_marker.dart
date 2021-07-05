@@ -20,8 +20,8 @@ class ScoreMarker {
   int get maxFrequency => _maxFrequency;
 
   void set maxFrequency(int maxFrequency) {
-    if (this.maxFrequency < maxFrequency) {
-      this.maxFrequency = maxFrequency;
+    if (this._maxFrequency < maxFrequency) {
+      this._maxFrequency = maxFrequency;
     }
   }
 
@@ -32,8 +32,8 @@ class ScoreMarker {
   }
 
   void setMaxFrequency(int maxFrequency) {
-    if (this.maxFrequency < maxFrequency) {
-      this.maxFrequency = maxFrequency;
+    if (this._maxFrequency < maxFrequency) {
+      this._maxFrequency = maxFrequency;
     }
   }
 
@@ -41,7 +41,7 @@ class ScoreMarker {
     double maxLength = 0;
     for (SuggestWord sw in suggestWordList) {
       if (maxLength < sw.length) {
-        maxLength = sw.length as double;
+        maxLength = sw.length.toDouble();
       }
     }
 
