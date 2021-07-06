@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
 import 'package:ime_mongol_package/algorithm/burhard_keller_tree.dart';
 import 'package:ime_mongol_package/algorithm/score_marker.dart';
 import 'package:ime_mongol_package/black_sequence_service.dart';
@@ -14,6 +15,34 @@ import 'package:ime_mongol_package/model/word_entity.dart';
 
 import 'keyboard/decomposer.dart';
 import 'letter/splice/letter_splicer.dart';
+
+List<SuggestWord> matchInBkMaps(Map<String, dynamic> args) {
+  var str = args['str'];
+  Map<int, BurkhardKellerTree> bkTree = args['bkTree'];
+
+  int length = str.length;
+  ScoreMarker scoreMarker = new ScoreMarker(str);
+
+  for (int keyLength in bkTree.keys) {
+    if (keyLength >= length && keyLength < length * 2) {
+      List<StringDistanceInfo> partMatched =
+          bkTree[keyLength]!.matching(str, keyLength - length);
+      if (partMatched == null || partMatched.isEmpty) {
+        continue;
+      }
+      for (StringDistanceInfo info in partMatched) {
+        WordEntity we = info.getMountObject() as WordEntity;
+        scoreMarker.setMaxFrequency(we.frequency);
+        SuggestWord sw = new SuggestWord(
+            we.str, we.length, we.frequency, info.getDistance());
+        scoreMarker.add(sw);
+      }
+    }
+  }
+
+  scoreMarker.markAndFilter();
+  return scoreMarker.getSuggestWordList();
+}
 
 class InputMethodService {
   static const String ROOT_STRING = "ᡥᡪᡱᡪᢝᡥᡪᡱᡪᢝ";
@@ -68,38 +97,39 @@ class InputMethodService {
     print('total Records loaded:$totalRecords');
   }
 
-  List<SuggestWord> matchInBkMaps(final String str) {
-    int time1 = DateTime.now().millisecondsSinceEpoch;
-    if (str == null || str.isEmpty) {
-      return List.empty();
-    }
-    int length = str.length;
-    ScoreMarker scoreMarker = new ScoreMarker(str);
+  // List<SuggestWord> matchInBkMaps(final String str) {
+  //   int time1 = DateTime.now().millisecondsSinceEpoch;
+  //   if (str == null || str.isEmpty) {
+  //     return List.empty();
+  //   }
+  //   int length = str.length;
+  //   ScoreMarker scoreMarker = new ScoreMarker(str);
 
-    for (int keyLength in _lengthKeyBkMap.keys) {
-      if (keyLength >= length && keyLength < length * 2) {
-        List<StringDistanceInfo> partMatched =
-            _lengthKeyBkMap[keyLength]!.matching(str, keyLength - length);
-        if (partMatched == null || partMatched.isEmpty) {
-          continue;
-        }
-        for (StringDistanceInfo info in partMatched) {
-          WordEntity we = info.getMountObject() as WordEntity;
-          scoreMarker.setMaxFrequency(we.frequency);
-          SuggestWord sw = new SuggestWord(
-              we.str, we.length, we.frequency, info.getDistance());
-          scoreMarker.add(sw);
-        }
-      }
-    }
+  //   for (int keyLength in _lengthKeyBkMap.keys) {
+  //     if (keyLength >= length && keyLength < length * 2) {
+  //       List<StringDistanceInfo> partMatched =
+  //           _lengthKeyBkMap[keyLength]!.matching(str, keyLength - length);
+  //       if (partMatched == null || partMatched.isEmpty) {
+  //         continue;
+  //       }
+  //       for (StringDistanceInfo info in partMatched) {
+  //         WordEntity we = info.getMountObject() as WordEntity;
+  //         scoreMarker.setMaxFrequency(we.frequency);
+  //         SuggestWord sw = new SuggestWord(
+  //             we.str, we.length, we.frequency, info.getDistance());
+  //         scoreMarker.add(sw);
+  //       }
+  //     }
+  //   }
 
-    scoreMarker.markAndFilter();
-    // print(
-    //     '$str, ${scoreMarker.getSuggestWordList().length}, ${DateTime.now().millisecondsSinceEpoch - time1}');
-    return scoreMarker.getSuggestWordList();
-  }
+  //   scoreMarker.markAndFilter();
+  //   // print(
+  //   //     '$str, ${scoreMarker.getSuggestWordList().length}, ${DateTime.now().millisecondsSinceEpoch - time1}');
+  //   return scoreMarker.getSuggestWordList();
+  // }
 
-  List<SuggestWord> fuzzyMakeWord(final String inputLatinSequence) {
+  Future<List<SuggestWord>> fuzzyMakeWord(
+      final String inputLatinSequence) async {
     int time1 = DateTime.now().millisecondsSinceEpoch;
     if (inputLatinSequence == null || inputLatinSequence.isEmpty) {
       return List.empty();
@@ -115,6 +145,7 @@ class InputMethodService {
 
     // Original Java code uses synchronization
     // If performance is slow, try to improve this part
+    List<Future> futures = [];
 
     for (List<String> latinSequence in decomposedLatinSequences) {
       List<LetterShapeSequence> letterShapeSequenceList =
@@ -131,24 +162,29 @@ class InputMethodService {
           continue;
         }
 
-        List<SuggestWord> partSuggestWord = this.matchInBkMaps(s);
-        if (partSuggestWord == null || partSuggestWord.isEmpty) {
-          _blackSequenceService.add(s);
-        }
-        // synchronized (suggestWordMap) {
-        for (SuggestWord sw in partSuggestWord) {
-          SuggestWord? tmp = suggestWordMap[sw.str];
-          if (tmp != null && tmp.score > sw.score) {
-            continue;
+        final Future future = compute(matchInBkMaps, {
+          "bkTree": _lengthKeyBkMap,
+          "str": s,
+        }).then((result) {
+          List<SuggestWord> partSuggestWord = result;
+          if (partSuggestWord == null || partSuggestWord.isEmpty) {
+            _blackSequenceService.add(s);
           }
-          if (keyFilter == null || keyFilter.accept(sw.str)) {
-            suggestWordMap[sw.str] = sw;
+          for (SuggestWord sw in partSuggestWord) {
+            SuggestWord? tmp = suggestWordMap[sw.str];
+            if (tmp != null && tmp.score > sw.score) {
+              continue;
+            }
+            if (keyFilter == null || keyFilter.accept(sw.str)) {
+              suggestWordMap[sw.str] = sw;
+            }
           }
-        }
-        // }
-
+        });
+        futures.add(future);
       }
     }
+
+    await Future.wait(futures);
 
     //TODO: do it periodically when app is idle
     _blackSequenceService.persistNewRecords();
@@ -189,7 +225,7 @@ class InputMethodService {
     return words;
   }
 
-  List<String> makeWord(final String inputLatinSequence) {
+  Future<List<String>> makeWord(final String inputLatinSequence) async {
     int time1 = DateTime.now().millisecondsSinceEpoch;
     if (inputLatinSequence == null || inputLatinSequence.isEmpty) {
       return List.empty();
@@ -197,7 +233,7 @@ class InputMethodService {
     List<String> words = [];
     List<String> severeMatchResult = this.severeMakeWord(inputLatinSequence);
     List<SuggestWord> fuzzyMatchSuggestResult =
-        this.fuzzyMakeWord(inputLatinSequence);
+        await this.fuzzyMakeWord(inputLatinSequence);
     List<String> fuzzyMatchResult =
         SuggestWord.convert(fuzzyMatchSuggestResult);
 
