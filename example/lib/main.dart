@@ -52,7 +52,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _service = InputMethodService();
-  bool _isLoading = true;
+  bool _isInitializing = true;
+  bool _isLoading = false;
   List<String> _words = [];
   final controller = TextEditingController();
 
@@ -61,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     _service.initialize().then((value) {
-      _isLoading = false;
+      _isInitializing = false;
       setState(() {});
     });
   }
@@ -75,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(24.0),
-        child: _isLoading
+        child: _isInitializing
             ? CircularProgressIndicator()
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -88,8 +89,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () => _suggestWords(controller.text),
-                        child: Text('generate'),
+                        onPressed: () =>
+                            _isLoading ? null : _suggestWords(controller.text),
+                        child: _isLoading
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Text('generate'),
                       ),
                     ],
                   ),
@@ -101,23 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 12.0,
                   ),
                   Expanded(
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (_, index) {
-                        var str = _words[index];
-                        return MongolText(
-                          str,
-                          style: TextStyle(
-                            fontFamily: 'z52haratig',
-                            fontSize: 24,
-                          ),
-                        );
-                      },
-                      separatorBuilder: (_, index) => SizedBox(
-                        width: 4.0,
-                      ),
-                      itemCount: _words.length,
-                    ),
+                    child: _buildWrappedWords(),
                   ),
                 ],
               ),
@@ -125,10 +113,51 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget _buildWrappedWords() {
+    return SingleChildScrollView(
+      child: Wrap(
+        runSpacing: 16,
+        children: _words
+            .map((str) => MongolText(
+                  str,
+                  style: TextStyle(
+                    fontFamily: 'z52haratig',
+                    fontSize: 24,
+                  ),
+                ))
+            .toList(),
+      ),
+    );
+  }
+
+  Widget _buildWordsList() {
+    return ListView.separated(
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (_, index) {
+        var str = _words[index];
+        return MongolText(
+          str,
+          style: TextStyle(
+            fontFamily: 'z52haratig',
+            fontSize: 24,
+          ),
+        );
+      },
+      separatorBuilder: (_, index) => SizedBox(
+        width: 4.0,
+      ),
+      itemCount: _words.length,
+    );
+  }
+
   void _suggestWords(str) {
+    setState(() {
+      _isLoading = true;
+    });
     _service.makeWord(str).then((words) {
       setState(() {
         _words = words;
+        _isLoading = false;
       });
     });
   }
