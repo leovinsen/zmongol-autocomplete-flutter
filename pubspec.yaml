@@ -8,6 +8,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  async_task: ^1.0.11
   flutter:
     sdk: flutter
   sqflite: ^2.0.0+3

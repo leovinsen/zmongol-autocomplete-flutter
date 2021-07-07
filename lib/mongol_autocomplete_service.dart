@@ -1,8 +1,10 @@
 import 'dart:collection';
 
+import 'package:async_task/async_task.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ime_mongol_package/algorithm/burhard_keller_tree.dart';
 import 'package:ime_mongol_package/algorithm/score_marker.dart';
+import 'package:ime_mongol_package/bk_tree_matcher.dart';
 import 'package:ime_mongol_package/black_sequence_service.dart';
 import 'package:ime_mongol_package/data/db_provider.dart';
 import 'package:ime_mongol_package/data/mongol_words_repository.dart';
@@ -16,40 +18,15 @@ import 'package:ime_mongol_package/model/word_entity.dart';
 import 'keyboard/decomposer.dart';
 import 'letter/splice/letter_splicer.dart';
 
-List<SuggestWord> matchInBkMaps(Map<String, dynamic> args) {
-  var str = args['str'];
-  Map<int, BurkhardKellerTree> bkTree = args['bkTree'];
-
-  int length = str.length;
-  ScoreMarker scoreMarker = new ScoreMarker(str);
-
-  for (int keyLength in bkTree.keys) {
-    if (keyLength >= length && keyLength < length * 2) {
-      List<StringDistanceInfo> partMatched =
-          bkTree[keyLength]!.matching(str, keyLength - length);
-      if (partMatched == null || partMatched.isEmpty) {
-        continue;
-      }
-      for (StringDistanceInfo info in partMatched) {
-        WordEntity we = info.getMountObject() as WordEntity;
-        scoreMarker.setMaxFrequency(we.frequency);
-        SuggestWord sw = new SuggestWord(
-            we.str, we.length, we.frequency, info.getDistance());
-        scoreMarker.add(sw);
-      }
-    }
-  }
-
-  scoreMarker.markAndFilter();
-  return scoreMarker.getSuggestWordList();
-}
-
 class InputMethodService {
   static const String ROOT_STRING = "ᡥᡪᡱᡪᢝᡥᡪᡱᡪᢝ";
   static const int DEFAULT_CAPACITY = 64;
   static const int FREQUENCY_BOUND = 6;
 
   final _lengthKeyBkMap = Map<int, BurkhardKellerTree>();
+
+  late SharedData<Map<int, BurkhardKellerTree>, Map<int, BurkhardKellerTree>>
+      sharedData;
 
   final wordRepository = MongolWordsRepository();
 
@@ -61,14 +38,32 @@ class InputMethodService {
 
   final _blackSequenceService = BlackSequenceService();
 
+  late AsyncExecutor executor;
+
   Future<void> initialize() async {
     int time1 = DateTime.now().millisecondsSinceEpoch;
+
     await DbProvider.instance.initialize();
     await _loadWordsIntoMemory();
     await _blackSequenceService.initialize();
-    int time2 = DateTime.now().millisecondsSinceEpoch;
+    initExecutor();
 
+    int time2 = DateTime.now().millisecondsSinceEpoch;
     print('initialized autocomplete service in ${time2 - time1} ms');
+  }
+
+  void initExecutor() {
+    // Instantiate the task executor:
+    executor = AsyncExecutor(
+      sequential: false,
+      parallelism: 64,
+      taskTypeRegister: _taskTypeRegister,
+    );
+
+    sharedData =
+        SharedData<Map<int, BurkhardKellerTree>, Map<int, BurkhardKellerTree>>(
+            _lengthKeyBkMap,
+            noSerializationOnDartNative: true);
   }
 
   Future<void> _loadWordsIntoMemory() async {
@@ -145,7 +140,8 @@ class InputMethodService {
 
     // Original Java code uses synchronization
     // If performance is slow, try to improve this part
-    List<Future> futures = [];
+
+    List<BKTreeMatcher> tasks = [];
 
     for (List<String> latinSequence in decomposedLatinSequences) {
       List<LetterShapeSequence> letterShapeSequenceList =
@@ -162,29 +158,35 @@ class InputMethodService {
           continue;
         }
 
-        final Future future = compute(matchInBkMaps, {
-          "bkTree": _lengthKeyBkMap,
-          "str": s,
-        }).then((result) {
-          List<SuggestWord> partSuggestWord = result;
-          if (partSuggestWord == null || partSuggestWord.isEmpty) {
-            _blackSequenceService.add(s);
-          }
-          for (SuggestWord sw in partSuggestWord) {
-            SuggestWord? tmp = suggestWordMap[sw.str];
-            if (tmp != null && tmp.score > sw.score) {
-              continue;
-            }
-            if (keyFilter == null || keyFilter.accept(sw.str)) {
-              suggestWordMap[sw.str] = sw;
-            }
-          }
-        });
-        futures.add(future);
+        tasks.add(BKTreeMatcher(s, sharedData)..filter = keyFilter);
       }
     }
 
-    await Future.wait(futures);
+    int time3 = DateTime.now().millisecondsSinceEpoch;
+
+    var executions = executor.executeAll(tasks);
+    await Future.wait(executions);
+
+    int time4 = DateTime.now().millisecondsSinceEpoch;
+    print('total execution time for future: ${time4 - time3}');
+
+    for (BKTreeMatcher t in tasks) {
+      List<SuggestWord> partSuggestWord = t.result!;
+      final s = t.word;
+      final keyFilter = t.filter;
+      if (partSuggestWord == null || partSuggestWord.isEmpty) {
+        _blackSequenceService.add(s);
+      }
+      for (SuggestWord sw in partSuggestWord) {
+        SuggestWord? tmp = suggestWordMap[sw.str];
+        if (tmp != null && tmp.score > sw.score) {
+          continue;
+        }
+        if (keyFilter == null || keyFilter.accept(sw.str)) {
+          suggestWordMap[sw.str] = sw;
+        }
+      }
+    }
 
     //TODO: do it periodically when app is idle
     _blackSequenceService.persistNewRecords();
@@ -222,6 +224,8 @@ class InputMethodService {
     }
 
     int time2 = DateTime.now().millisecondsSinceEpoch;
+    print(
+        'severeMakeWord() key: $inputLatinSequence, runtime: ${time2 - time1}');
     return words;
   }
 
@@ -234,8 +238,13 @@ class InputMethodService {
     List<String> severeMatchResult = this.severeMakeWord(inputLatinSequence);
     List<SuggestWord> fuzzyMatchSuggestResult =
         await this.fuzzyMakeWord(inputLatinSequence);
+
+    int timeConvert = DateTime.now().millisecondsSinceEpoch;
     List<String> fuzzyMatchResult =
         SuggestWord.convert(fuzzyMatchSuggestResult);
+
+    print(
+        'Conversion time: ${DateTime.now().millisecondsSinceEpoch - timeConvert}');
 
     if (fuzzyMatchResult == null || fuzzyMatchResult.isEmpty) {
       words.addAll(severeMatchResult);
@@ -263,3 +272,13 @@ class InputMethodService {
     return words;
   }
 }
+
+// This top-level function returns the tasks types that will be registered
+// for execution. Task instances are returned, but won't be executed and
+// will be used only to identify the task type:
+List<AsyncTask> _taskTypeRegister() => [
+      BKTreeMatcher(
+          "",
+          SharedData<Map<int, BurkhardKellerTree>,
+              Map<int, BurkhardKellerTree>>({}))
+    ];

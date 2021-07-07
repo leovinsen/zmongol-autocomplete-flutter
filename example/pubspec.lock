@@ -8,6 +8,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.6.1"
+  async_extension:
+    dependency: transitive
+    description:
+      name: async_extension
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
+  async_task:
+    dependency: transitive
+    description:
+      name: async_task
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.11"
   boolean_selector:
     dependency: transitive
     description:
