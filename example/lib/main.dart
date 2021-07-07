@@ -54,6 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _service = InputMethodService();
   bool _isLoading = true;
   List<String> _words = [];
+  final controller = TextEditingController();
 
   @override
   void initState() {
@@ -79,7 +80,19 @@ class _MyHomePageState extends State<MyHomePage> {
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextField(onChanged: _suggestWords),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: controller,
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => _suggestWords(controller.text),
+                        child: Text('generate'),
+                      ),
+                    ],
+                  ),
                   SizedBox(
                     height: 12.0,
                   ),
@@ -113,10 +126,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _suggestWords(str) {
-    var res = _service.makeWord(str);
-
-    setState(() {
-      _words = res;
+    _service.makeWord(str).then((words) {
+      setState(() {
+        _words = words;
+      });
     });
   }
 }
