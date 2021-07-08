@@ -12,9 +12,9 @@ int getLevenshteinDistance(String? a, String? b) {
       d[0][j] = j;
     }
 
-    for (int i = 1; i <= n; i++) {
-      d[i][0] = i;
-    }
+    // for (int i = 1; i <= n; i++) {
+    //   d[i][0] = i;
+    // }
 
     for (int i = 1; i <= n; i++) {
       d[i][0] = i;
