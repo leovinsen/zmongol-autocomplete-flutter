@@ -25,5 +25,6 @@ flutter:
 
   # To add assets to your package, add an assets section, like this:
   assets:
+    - lib/assets/mongol_words_lean.db
     - lib/assets/mongol_words.db
     
