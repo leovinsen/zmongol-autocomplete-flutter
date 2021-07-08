@@ -52,6 +52,7 @@ class BurkhardKellerTree {
 
   void _match(final List<StringDistanceInfo> list, final Node node,
       final String str, final int n) {
+    int time1 = DateTime.now().millisecondsSinceEpoch;
     int d = getLevenshteinDistance(node.mountObject.getString(), str);
     if (d <= n && !node.isRoot) {
       list.add(new StringDistanceInfo(d, node.mountObject));
@@ -65,6 +66,8 @@ class BurkhardKellerTree {
         _match(list, node.getChild(i)!, str, n);
       }
     }
+    int time2 = DateTime.now().millisecondsSinceEpoch;
+    // print('match completed in ${time2 - time1}');
   }
 }
 
