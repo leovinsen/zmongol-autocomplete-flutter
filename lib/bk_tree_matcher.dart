@@ -59,21 +59,10 @@ class BKTreeMatcher extends AsyncTask<String, List<SuggestWord>> {
 
     final bkTree = this.bkTreeData.data;
 
-    int count = 0;
     for (int keyLength in bkTree.keys) {
-      if (count == 2) {
-        break;
-      }
       if (keyLength >= length && keyLength < length * 2) {
-        if (count == 2) {
-          break;
-        }
-        int time1 = DateTime.now().millisecondsSinceEpoch;
         List<StringDistanceInfo> partMatched =
             bkTree[keyLength]!.matching(str, keyLength - length);
-
-        int time2 = DateTime.now().millisecondsSinceEpoch;
-        print('$str:, matching done in ${time2 - time1}');
         if (partMatched.isEmpty) {
           continue;
         }
@@ -83,11 +72,7 @@ class BKTreeMatcher extends AsyncTask<String, List<SuggestWord>> {
           SuggestWord sw = new SuggestWord(
               we.str, we.length, we.frequency, info.getDistance());
           scoreMarker.add(sw);
-          count++;
         }
-
-        int time3 = DateTime.now().millisecondsSinceEpoch;
-        print('$str:, scoring done in ${time3 - time2}');
       }
     }
 

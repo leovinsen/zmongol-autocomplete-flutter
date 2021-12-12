@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:async_task/async_task.dart';
 import 'package:flutter/foundation.dart';
@@ -61,8 +60,6 @@ class InputMethodService {
       taskTypeRegister: _taskTypeRegister,
     );
 
-    executor.logger.enabled = true;
-
     sharedData =
         SharedData<Map<int, BurkhardKellerTree>, Map<int, BurkhardKellerTree>>(
             _lengthKeyBkMap,
@@ -84,7 +81,7 @@ class InputMethodService {
       List<WordEntity> wordEntityList =
           await wordRepository.queryWordsByLengthAndGtFrequency(
         length: curLength,
-        frequency: 100,
+        frequency: 45,
       );
 
       totalRecords += wordEntityList.length;
@@ -154,12 +151,7 @@ class InputMethodService {
       }
       KeyFilter? keyFilter = keyFilterFactory
           .get(latinSequence[latinSequence.length - 1] + "-tail");
-
-      int count = 0;
       for (LetterShapeSequence ls in letterShapeSequenceList) {
-        if (count == 5) {
-          break;
-        }
         String s = ls.toString();
 
         if (_blackSequenceService.contains(s)) {
@@ -167,7 +159,6 @@ class InputMethodService {
         }
 
         tasks.add(BKTreeMatcher(s, sharedData)..filter = keyFilter);
-        count++;
       }
     }
 
@@ -196,9 +187,6 @@ class InputMethodService {
         }
       }
     }
-
-    int time5 = DateTime.now().millisecondsSinceEpoch;
-    print('total execution time for mapping: ${time5 - time4}');
 
     //TODO: do it periodically when app is idle
     _blackSequenceService.persistNewRecords();
