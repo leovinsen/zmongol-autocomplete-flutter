@@ -22,7 +22,5 @@ class WordEntity implements MountObject {
   }
 
   @override
-  String getString() {
-    return this.str;
-  }
+  String getString() => str;
 }

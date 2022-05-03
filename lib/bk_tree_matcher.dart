@@ -80,6 +80,6 @@ class BKTreeMatcher extends AsyncTask<String, List<SuggestWord>> {
     scoreMarker.markAndFilter();
 
     // print('isolate for $str, runtime: ${time2 - time1} ms');
-    return scoreMarker.getSuggestWordList();
+    return scoreMarker.suggestWordList;
   }
 }

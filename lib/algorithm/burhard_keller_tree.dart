@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:math';
 
 import 'package:ime_mongol_package/model/mount_object.dart';
@@ -50,13 +49,22 @@ class BurkhardKellerTree {
     return matchedList;
   }
 
-  void _match(final List<StringDistanceInfo> list, final Node node,
-      final String str, final int n) {
+  void _match(
+    final List<StringDistanceInfo> list,
+    final Node node,
+    final String str,
+    final int n,
+  ) {
     int time1 = DateTime.now().millisecondsSinceEpoch;
+
     int d = getLevenshteinDistance(node.mountObject.getString(), str);
+
     if (d <= n && !node.isRoot) {
-      list.add(new StringDistanceInfo(d, node.mountObject));
+      list.add(
+        StringDistanceInfo(d, node.mountObject),
+      );
     }
+
     if (node.children.isEmpty) {
       return;
     }
@@ -72,12 +80,12 @@ class BurkhardKellerTree {
 }
 
 class Node {
-  bool isRoot = false;
   final MountObject mountObject;
+  bool isRoot = false;
 
-  //Java implementation uses TreeMap
-  //Using SplayTreeMap because no native TreeMap dart implementation
-  final Map<int, Node> children = new Map<int, Node>();
+  static const maxDistance = 50;
+
+  final Map<int, Node> children = <int, Node>{};
 
   Node(this.mountObject);
 

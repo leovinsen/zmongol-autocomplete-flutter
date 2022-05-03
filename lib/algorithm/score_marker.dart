@@ -9,7 +9,7 @@ class ScoreMarker {
 
   static const jaroWinklerThreshold = 1;
 
-  final suggestWordList = <SuggestWord>[];
+  final List<SuggestWord> suggestWordList = <SuggestWord>[];
 
   final jaroWinklerDistance = new JaroWinklerDistance();
 
@@ -19,7 +19,7 @@ class ScoreMarker {
 
   int get maxFrequency => _maxFrequency;
 
-  void set maxFrequency(int maxFrequency) {
+  set maxFrequency(int maxFrequency) {
     if (this._maxFrequency < maxFrequency) {
       this._maxFrequency = maxFrequency;
     }
@@ -37,7 +37,7 @@ class ScoreMarker {
     }
   }
 
-  void markAndFilter() {
+  Iterable<SuggestWord> markAndFilter() {
     double maxLength = 0;
     for (SuggestWord sw in suggestWordList) {
       if (maxLength < sw.length) {
@@ -50,15 +50,16 @@ class ScoreMarker {
         _computeLevenshteinScore(str.length, 0, maxLength) *
             levenshteinThreshold;
 
-    for (int i = suggestWordList.length - 1; i >= 0; i--) {
-      SuggestWord sw = suggestWordList[i];
+    // suggestWordList.where((element) => );
+    // Filter words by jaroWinkler score
+
+    return suggestWordList.where((sw) {
       sw.levenshteinScore =
           _computeLevenshteinScore(sw.length, sw.levenshteinD, maxLength);
       sw.jaroWinklerScore = jaroWinklerDistance.getDistance(str, sw.str);
 
       if (sw.jaroWinklerScore < 1) {
-        suggestWordList.remove(i);
-        continue;
+        return false;
       }
       sw.frequencyScore = (sw.frequency / maxFrequency);
       sw.score = sw.frequencyScore * frequencyThreshold +
@@ -66,15 +67,16 @@ class ScoreMarker {
           sw.levenshteinScore * levenshteinThreshold;
 
       sw.score = sw.score / maxScore;
-    }
+
+      return true;
+    });
   }
 
   double _computeLevenshteinScore(
-      int length, int levenshteinDistance, double maxLength) {
+    int length,
+    int levenshteinDistance,
+    double maxLength,
+  ) {
     return 1.0 - ((length / 2 + levenshteinDistance) / (1.5 * maxLength));
-  }
-
-  List<SuggestWord> getSuggestWordList() {
-    return suggestWordList;
   }
 }

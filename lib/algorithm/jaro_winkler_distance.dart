@@ -1,35 +1,37 @@
-import 'dart:math' as Math;
+import 'dart:math' as math;
 
 class JaroWinklerDistance {
   static const threshold = 0.7;
 
   List<int> _matches(String s1, String s2) {
-    String max;
-    String min;
+    String strMax;
+    String strMin;
+
     if (s1.length > s2.length) {
-      max = s1;
-      min = s2;
+      strMax = s1;
+      strMin = s2;
     } else {
-      max = s2;
-      min = s1;
+      strMax = s2;
+      strMin = s1;
     }
 
-    int range = max.length;
-    List<int> matchIndexes = List.filled(min.length, -1);
-    List<bool> matchFlags = List.filled(max.length, false);
+    int range = strMax.length;
+    List<int> matchIndexes = List.filled(strMin.length, -1);
+    List<bool> matchFlags = List.filled(strMax.length, false);
     int matches = 0;
 
     int transpositions;
     int prefix;
-    for (int mi = 0; mi < min.length; ++mi) {
-      var c1 = min.substring(mi, mi + 1);
-      transpositions = Math.max(mi - range, 0);
+    for (int mi = 0; mi < strMin.length; ++mi) {
+      var c1 = strMin.codeUnitAt(mi);
 
-      for (prefix = Math.min(mi + range + 1, max.length);
+      transpositions = math.max(mi - range, 0);
+
+      for (prefix = math.min(mi + range + 1, strMax.length);
           transpositions < prefix;
           ++transpositions) {
         if (!matchFlags[transpositions] &&
-            c1 == max.substring(transpositions, transpositions + 1)) {
+            c1 == strMax.codeUnitAt(transpositions)) {
           matchIndexes[mi] = transpositions;
           matchFlags[transpositions] = true;
           ++matches;
@@ -38,22 +40,22 @@ class JaroWinklerDistance {
       }
     }
 
-    var ms1 = <String>[];
-    var ms2 = <String>[];
+    var ms1 = <int>[];
+    var ms2 = <int>[];
     transpositions = 0;
 
-    for (prefix = 0; transpositions < min.length; ++transpositions) {
+    for (prefix = 0; transpositions < strMin.length; ++transpositions) {
       if (matchIndexes[transpositions] != -1) {
-        ms1.insert(prefix, min.substring(transpositions, transpositions + 1));
+        ms1.insert(prefix, strMin.codeUnitAt(transpositions));
         ++prefix;
       }
     }
 
     transpositions = 0;
 
-    for (prefix = 0; transpositions < max.length; ++transpositions) {
+    for (prefix = 0; transpositions < strMax.length; ++transpositions) {
       if (matchFlags[transpositions]) {
-        ms2.insert(prefix, max.substring(transpositions, transpositions + 1));
+        ms2.insert(prefix, strMax.codeUnitAt(transpositions));
         ++prefix;
       }
     }
@@ -69,12 +71,12 @@ class JaroWinklerDistance {
     prefix = 0;
 
     for (int mi = 0;
-        mi < min.length && s1.substring(mi, mi + 1) == s2.substring(mi, mi + 1);
+        mi < strMin.length && s1.codeUnitAt(mi) == s2.codeUnitAt(mi);
         ++mi) {
       ++prefix;
     }
 
-    return [matches, (transpositions / 2).floor(), prefix, min.length];
+    return [matches, (transpositions / 2).floor(), prefix, strMin.length];
   }
 
   double getDistance(String s1, String s2) {
@@ -87,17 +89,13 @@ class JaroWinklerDistance {
       double j = (m / s1.length + m / s2.length + (m - mtp[1]) / m) / 3.0;
 
       //Jaro Winkler Distance
-      if (j < this.getThreshold() || mtp[2] <= 0) {
+      if (j < threshold || mtp[2] <= 0) {
         return j;
-      } else if (mtp[2] >= Math.max(s1.length - 1, 2)) {
+      } else if (mtp[2] >= math.max(s1.length - 1, 2)) {
         return 2.0 + j + mtp[2] / mtp[3] * (1.0 - j);
       } else {
         return 1.0 + j + mtp[2] / mtp[3] * (1.0 - j);
       }
     }
-  }
-
-  double getThreshold() {
-    return threshold;
   }
 }
