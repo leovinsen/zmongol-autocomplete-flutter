@@ -18,19 +18,19 @@ class SuggestWord implements MountObject {
   double get levenshteinScore => this._levenshteinScore;
   double get score => this._score;
 
-  void set jaroWinklerScore(double jaroWinkler) {
+  set jaroWinklerScore(double jaroWinkler) {
     this._jaroWinklerScore = jaroWinkler;
   }
 
-  void set frequencyScore(double frequency) {
+  set frequencyScore(double frequency) {
     this._frequencyScore = frequency;
   }
 
-  void set levenshteinScore(double levenshtein) {
+  set levenshteinScore(double levenshtein) {
     this._levenshteinScore = levenshtein;
   }
 
-  void set score(double score) {
+  set score(double score) {
     this._score = score;
   }
 

@@ -7,7 +7,7 @@ class KeyFilterFactory {
   final filterMap = HashMap<String, KeyFilter>();
 
   KeyFilterFactory() {
-    BTailKeyFilter bTailKeyFilter = new BTailKeyFilter();
+    BTailKeyFilter bTailKeyFilter = BTailKeyFilter();
     filterMap[bTailKeyFilter.getKey()] = bTailKeyFilter;
   }
 

@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:ime_mongol_package/data/mongol_words_repository.dart';
 import 'package:ime_mongol_package/mongol_autocomplete_service.dart';
 import 'package:mongol/mongol.dart';
 
@@ -72,6 +69,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _benchmark,
+        icon: Icon(Icons.abc),
+        label: Text('Benchmark'),
       ),
       body: Container(
         alignment: Alignment.center,
@@ -150,10 +152,26 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _suggestWords(str) {
+  void _benchmark() async {
+    var words = [
+      'bodogsan',
+      'ulaganbagator',
+      'hudelmuri',
+      'amerika',
+      'horcabagator',
+      'abogsan'
+    ];
+
+    for (var word in words) {
+      await _service.makeWord(word);
+    }
+  }
+
+  void _suggestWords(str) async {
     setState(() {
       _isLoading = true;
     });
+
     _service.makeWord(str).then((words) {
       setState(() {
         _words = words;

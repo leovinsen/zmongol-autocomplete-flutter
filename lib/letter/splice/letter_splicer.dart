@@ -73,7 +73,7 @@ class LetterSplicer {
   List<LetterShapeSequence> severe(List<String> latinSequence) {
     int time1 = DateTime.now().millisecondsSinceEpoch;
     try {
-      if (latinSequence == null || latinSequence.isEmpty) {
+      if (latinSequence.isEmpty) {
         return List.empty();
       }
       List<LetterShapeSequence> completeLssList = [];
@@ -90,7 +90,7 @@ class LetterSplicer {
         }
         i++;
 
-        if (letterShapeList == null || letterShapeList.isEmpty) {
+        if (letterShapeList.isEmpty) {
           continue;
         }
         int size = (completeLssList.length > 0 ? completeLssList.length : 1) *
@@ -98,7 +98,7 @@ class LetterSplicer {
         List<LetterShapeSequence> newWholeLssList = [];
 
         LetterShapeSequence lss;
-        if (completeLssList == null || completeLssList.isEmpty) {
+        if (completeLssList.isEmpty) {
           for (LetterShape letterShape in letterShapeList) {
             if (Verifier.canSevereSplicing(
                 LetterShapeSequence.emptyLss, letterShape)) {

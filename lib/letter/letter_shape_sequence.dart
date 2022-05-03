@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'letter_shape.dart';
 import 'nature.dart';
 import 'nature_util.dart';
