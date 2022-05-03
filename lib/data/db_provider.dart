@@ -10,7 +10,7 @@ class DbProvider {
 
   static final DbProvider instance = DbProvider._privateConstructor();
 
-  final _dbFilepath = "mongol_words_lean.db";
+  final _dbFilepath = "mongol_words.db";
 
   late Database _db;
 
