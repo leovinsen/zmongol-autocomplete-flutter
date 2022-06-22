@@ -1,7 +1,6 @@
 import 'package:ime_mongol_package/letter/letter.dart';
 import 'package:ime_mongol_package/letter/letter_location.dart';
 import 'package:ime_mongol_package/letter/letter_shape.dart';
-import 'package:ime_mongol_package/letter/splice/behind_rule_holder.dart';
 import 'package:ime_mongol_package/letter/zcode.dart';
 
 class T extends Letter {
@@ -26,7 +25,7 @@ class T extends Letter {
   LetterShape createTMiddleTSenj() {
     LetterShape ls =
         new LetterShape(latinKey, ZCode.t_senj, LetterLocation.MIDDLE);
-    ls.setSevereBehindAtRule(BehindRuleHolder.BEHIND_IS_NOT_EHSHIG);
+    // ls.setSevereBehindAtRule(BehindRuleHolder.BEHIND_IS_NOT_EHSHIG);
     return ls;
   }
 

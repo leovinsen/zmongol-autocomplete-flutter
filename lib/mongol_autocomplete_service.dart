@@ -17,7 +17,7 @@ import 'letter/splice/letter_splicer.dart';
 
 class InputMethodService {
   static const String ROOT_STRING = "ᡥᡪᡱᡪᢝᡥᡪᡱᡪᢝ";
-  static const int FREQUENCY_BOUND = 6;
+  static const int FREQUENCY_BOUND = 44;
 
   final _lengthKeyBkMap = Map<int, BurkhardKellerTree>();
 
@@ -43,7 +43,7 @@ class InputMethodService {
 
   Future<void> _loadWordsAndBuildTree() async {
     int maxWordLength =
-        await wordRepository.queryMaxLengthByFrequency(FREQUENCY_BOUND - 1);
+        await wordRepository.queryMaxLengthByFrequency(FREQUENCY_BOUND);
 
     int totalRecords = 0;
 
@@ -57,7 +57,7 @@ class InputMethodService {
       List<WordEntity> wordEntities =
           await wordRepository.queryWordsByLengthAndGtFrequency(
         length: wordLength,
-        frequency: 45,
+        frequency: FREQUENCY_BOUND,
       );
 
       totalRecords += wordEntities.length;

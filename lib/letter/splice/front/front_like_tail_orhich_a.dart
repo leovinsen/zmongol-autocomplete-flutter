@@ -32,6 +32,7 @@ class FrontLikeTailOrhichA implements SplicingAtFrontRule {
     this.matchShapes.add(Letters.x.xMidddle);
     this.matchShapes.add(Letters.t.tHead);
     this.matchShapes.add(Letters.t.tMiddleDSenj);
+    this.matchShapes.add(Letters.t.tMiddleTSenj);
     this.matchShapes.add(Letters.d.dHeadDSenj);
     this.matchShapes.add(Letters.d.dMiddleDSenj);
     this.matchShapes.add(Letters.q.qHead);
